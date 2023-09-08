@@ -9,7 +9,8 @@
     <title>Document</title>
 </head>
 <body>
-<div class="main-container">
+<div class="header">
+</div>
 {{range .AMS}}
     <div class="card">
         <img src="/resources/{{.Image}}" alt="{{.Name}}">
@@ -23,6 +24,6 @@
         <a href="/AMS/{{.ID}}">Подробнее</a>
     </div>
 {{end}}
-</div>
+
 </body>
 </html>

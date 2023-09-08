@@ -1,9 +1,12 @@
 
-.main-container{
+.header{
     margin-left: auto;
     margin-right: auto;
-    height: 500px;
-    border: 1px solid black;
+    height: 125px;
+    border: 1px solid #ccc;
+    padding-bottom: 40px;
+    width: 100%;
+    background-color: #cccccc;
 }
 .card {
     border: 1px solid #ccc;
@@ -12,16 +15,14 @@
     width: 20%;
     Float: left;
     margin: 20px;
-
 }
 .info-card {
-    border: 1px solid;
+    border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 10px;
     width: 70%;
     margin-left: auto;
     margin-right: auto;
-    width: 6em;
     font-size: large;
 }
 .info-img{
