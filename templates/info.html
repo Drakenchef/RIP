@@ -8,16 +8,18 @@
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
     <title>Document</title>
 </head>
+
 <body>
-{{range .AMS}}
-    <div class="card">
+{{with .AMS}}
+    <div class="info-card">
         <img src="/resources/{{.Image}}" alt="{{.Name}}">
         <h3>{{.Name}}</h3>
+        <p>Описание</p>
         <p>{{.Description}}</p>
-        <h3>{{.Rate}} баллов</h3>
-        <h3>{{.Price}}$</h3>
-        <a href="/product/{{.ID}}">Подробнее</a>
+
     </div>
 {{end}}
 </body>
+
+
 </html>

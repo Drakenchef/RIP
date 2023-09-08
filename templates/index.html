@@ -9,15 +9,20 @@
     <title>Document</title>
 </head>
 <body>
+<div class="main-container">
 {{range .AMS}}
     <div class="card">
         <img src="/resources/{{.Image}}" alt="{{.Name}}">
         <h3>{{.Name}}</h3>
-        <p>{{.Description}}</p>
-        <h3>{{.Rate}} баллов</h3>
-        <h3>{{.Price}}$</h3>
-        <a href="/product/{{.ID}}">Подробнее</a>
+        <p>{{.Title}}</p>
+        <ul>
+        {{range .Planets}}
+        <li>{{.}}</li>
+        {{end}}
+        </ul>
+        <a href="/AMS/{{.ID}}">Подробнее</a>
     </div>
 {{end}}
+</div>
 </body>
 </html>
