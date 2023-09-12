@@ -10,15 +10,20 @@
 </head>
 
 <body>
-<img src="/resources/icon.png">
-<h1 class="header_h">Автоматические межпланетные станции</h1>
+        <h1 class="header_h">Подробная информация</h1>
 <div class="line"></div>
-{{with .AMS}}
-    <div class="info-card">
-        <img src="/resources/{{.Image}}" alt="{{.Name}}">
-        <h3>{{.Name}}</h3>
-        <p>{{.Description}}</p>
-    </div>
+{{with .Planets}}
+<div class="info-card">
+    <img src="/resources/{{.Image}}" alt="{{.Name}}">
+    <h3>{{.Name}}</h3>
+    <span>Доступные для полёта АМС:</span>
+    <ul>
+        {{range .AMS}}
+            <li>{{.}}</li>
+        {{end}}
+    </ul>
+    <a href="/">На главную</a>
+</div>
 {{end}}
 
 

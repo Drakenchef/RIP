@@ -9,27 +9,23 @@
     <title>Document</title>
 </head>
 <body>
-<a href="/">
-    <img src="/resources/icon.png" class="small-icon">
-</a>
-    <h1 class="header_h">Автоматические межпланетные станции</h1>
+        <h1 class="header_h">Доступные космические объекты</h1>
     <div class="line"></div>
     <form action="/search" method="GET">
         <input type="text" name="search" placeholder="Поиск по названию">
         <button type="submit">Поиск</button>
     </form>
-{{range .AMS}}
+{{range .Planets}}
     <div class="card">
         <img src="/resources/{{.Image}}" alt="{{.Name}}">
         <h3>{{.Name}}</h3>
-{{/*        <p>{{.Title}}</p>*/}}
-        <span>Доступные космические тела:</span>
+        <span>Доступные для полёта АМС:</span>
         <ul>
-        {{range .Planets}}
+        {{range .AMS}}
         <li>{{.}}</li>
         {{end}}
         </ul>
-        <a href="/AMS/{{.ID}}">Подробнее</a>
+        <a href="/Planets/{{.ID}}">Подробнее</a>
     </div>
 {{end}}
 
