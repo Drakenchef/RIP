@@ -60,5 +60,3 @@ func StartServer() {
 
 	r.Run(":8080")
 }
-
-//adad
