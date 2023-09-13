@@ -1,6 +1,5 @@
 package api
 
-//try branches
 import (
 	backend "github.com/drakenchef/RIP"
 	"github.com/gin-gonic/gin"
@@ -31,10 +30,8 @@ func StartServer() {
 
 	r.GET("/Planets/:id", func(c *gin.Context) {
 		r.SetHTMLTemplate(template.Must(template.ParseFiles("./templates/info.html")))
-		// Получаем значение ID из параметров маршрута
 		id := c.Param("id")
 		var selectedPlanet backend.Planets
-		// Здесь мы выбираем конкретный AMS по его ID
 		for _, planet := range Planets {
 			if strconv.Itoa(planet.ID) == id {
 				selectedPlanet = planet
@@ -42,7 +39,6 @@ func StartServer() {
 			}
 		}
 
-		// Здесь мы передаем выбранный AMS в шаблон
 		c.HTML(http.StatusOK, "info.html", gin.H{
 			"Planets": selectedPlanet,
 		})
@@ -62,5 +58,5 @@ func StartServer() {
 		})
 	})
 
-	r.Run(":8888")
+	r.Run(":8080")
 }
