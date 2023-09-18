@@ -16,4 +16,5 @@ func (h *Handler) PlanetsList(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"Planets": planets,
 	})
+
 }

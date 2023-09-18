@@ -2,10 +2,10 @@ version: "3.8"
 services:
   db:
     image: postgres:12
-    volumes:
-      - type: volume
-        source: postgresdb-data
-        target: /var/lib/postgresql/data
+#    volumes:
+#      - type: volume
+#        source: postgresdb-data
+#        target: /var/lib/postgresql/data
     ports:
       - "${DB_PORT}:5432"
     environment:
@@ -13,7 +13,6 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_PASSWORD: ${DB_PASS}
 
-volumes:
-  postgresdb-data:
-    driver: local
-
+#volumes:
+#  postgresdb-data:
+#    driver: local

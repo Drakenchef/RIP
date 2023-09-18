@@ -2,7 +2,7 @@ package ds
 
 import "gorm.io/gorm"
 
-type PlanetRequest struct {
+type PlanetsRequest struct {
 	gorm.Model
 	FRID          uint          `json:"-"`
 	PlanetID      uint          `json:"-"`

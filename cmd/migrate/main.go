@@ -21,7 +21,7 @@ func main() {
 	if err := db.AutoMigrate(
 		&ds.Planet{},
 		&ds.FlightRequest{},
-		&ds.PlanetRequest{},
+		&ds.PlanetsRequest{},
 		&ds.Users{},
 	); err != nil {
 		panic("cant migrate db:" + err.Error())
