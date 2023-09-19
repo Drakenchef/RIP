@@ -21,7 +21,7 @@ func NewHandler(l *logrus.Logger, r *repository.Repository) *Handler {
 func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/", h.PlanetsList)
 	router.GET("/Planets/:id", h.PlanetById)
-	//router.DELETE()
+	router.POST("/delete/:id", h.DeletePlanet)
 	registerStatic(router)
 }
 

@@ -17,7 +17,11 @@
     </form>
 {{range .Planets}}
     <div class="card">
-        <a href="/delete/{{.ID}}" class="delete-button">&#10006;</a>
+        <form action="/delete/{{.ID}}" method="POST">
+            <input type="hidden" name="redirectURL" value="/">
+            <button class="delete-button" type="submit">&#10006;</button>
+        </form>
+{{/*        <a href="/delete/{{.ID}}" class="delete-button">&#10006;</a>*/}}
         <img src="/static/img/{{.Image}}" alt="{{.Name}}">
         <h3>{{.Name}}</h3>
         <a href="/Planets/{{.ID}}" class="planet-info">Подробнее</a>

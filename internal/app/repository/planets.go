@@ -8,7 +8,7 @@ import (
 
 func (r *Repository) PlanetsList() (*[]ds.Planet, error) {
 	var planets []ds.Planet
-	r.db.Find(&planets)
+	r.db.Where("is_delete = ?", false).Find(&planets)
 	return &planets, nil
 }
 
@@ -31,4 +31,9 @@ func (r *Repository) PlanetById(id string) (*ds.Planet, error) {
 	intId, _ := strconv.Atoi(id)
 	r.db.Find(&planets, intId)
 	return &planets, nil
+}
+
+func (r *Repository) DeletePlanet(id string) {
+	query := "UPDATE Planets SET is_delete = true WHERE id = $1"
+	r.db.Exec(query, id)
 }

@@ -44,3 +44,9 @@ func (h *Handler) PlanetById(ctx *gin.Context) {
 		"Planets": planets,
 	})
 }
+
+func (h *Handler) DeletePlanet(ctx *gin.Context) {
+	id := ctx.Param("id")
+	h.Repository.DeletePlanet(id)
+	ctx.Redirect(http.StatusFound, "/")
+}
