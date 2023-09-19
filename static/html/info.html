@@ -14,14 +14,8 @@
 <div class="line"></div>
 {{with .Planets}}
 <div class="info-card">
-    <img class="info-img" src="/resources/{{.Image}}" alt="{{.Name}}">
+    <img class="info-img" src="/static/img/{{.Image}}" alt="{{.Name}}">
     <h3>{{.Name}}</h3>
-    <span>Доступные для полёта АМС:</span>
-    <ul>
-        {{range .AMS}}
-            <li>{{.}}</li>
-        {{end}}
-    </ul>
     <span>Описание объекта:</span>
     <p>{{.Description}}</p>
     <a href="/">На главную</a>

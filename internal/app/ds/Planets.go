@@ -9,5 +9,6 @@ type Planet struct {
 	Radius      float64 `gorm:"not null" json:"radius"`
 	Distance    float64 `gorm:"not null" json:"distance"`
 	Gravity     float64 `gorm:"not null" json:"gravity"`
+	Image       string  `gorm:"type:varchar(255)" json:"image"`
 	IsDelete    bool    `json:"is_delete"`
 }

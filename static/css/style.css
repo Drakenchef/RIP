@@ -1,4 +1,9 @@
-
+.delete-button {
+    color: red;
+    text-decoration: none;
+    font-size: 20px;
+    margin-top: 10px;
+}
 .info-card {
     border: 1px solid #ccc;
     padding: 10px;
@@ -65,7 +70,7 @@
 }
 
 
-.card a {
+.planet-info {
     display: block;
     text-align: center;
     background-color: #ccc;

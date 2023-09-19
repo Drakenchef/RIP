@@ -13,6 +13,7 @@ CREATE TABLE planets
     radius float not null,
     distance float not null,
     gravity float not null,
+    image varchar(255),
     is_delete BOOLEAN
 );
 

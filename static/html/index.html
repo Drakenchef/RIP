@@ -17,15 +17,11 @@
     </form>
 {{range .Planets}}
     <div class="card">
-        <img src="/resources/{{.Image}}" alt="{{.Name}}">
+        <a href="/delete/{{.ID}}" class="delete-button">&#10006;</a>
+        <img src="/static/img/{{.Image}}" alt="{{.Name}}">
         <h3>{{.Name}}</h3>
-        <span>Доступные для полёта АМС:</span>
-        <ul>
-        {{range .AMS}}
-        <li>{{.}}</li>
-        {{end}}
-        </ul>
-        <a href="/Planets/{{.ID}}">Подробнее</a>
+        <a href="/Planets/{{.ID}}" class="planet-info">Подробнее</a>
+
     </div>
 {{end}}
 

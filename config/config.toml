@@ -1,2 +1,2 @@
 ServiceHost = "localhost"
-ServicePort = 7070
+ServicePort = 8080

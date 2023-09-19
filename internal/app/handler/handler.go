@@ -6,11 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const (
-	baseURL = "/"
-	planets = baseURL + "planets"
-)
-
 type Handler struct {
 	Logger     *logrus.Logger
 	Repository *repository.Repository
@@ -24,7 +19,9 @@ func NewHandler(l *logrus.Logger, r *repository.Repository) *Handler {
 }
 
 func (h *Handler) RegisterHandler(router *gin.Engine) {
-	router.GET(baseURL, h.PlanetsList)
+	router.GET("/", h.PlanetsList)
+	router.GET("/Planets/:id", h.PlanetById)
+	//router.DELETE()
 	registerStatic(router)
 }
 
@@ -34,8 +31,6 @@ func registerStatic(router *gin.Engine) {
 	router.Static("/css", "./static")
 	router.Static("/img", "./static")
 }
-
-// MARK: - Error handler
 
 func (h *Handler) errorHandler(ctx *gin.Context, errorStatusCode int, err error) {
 	h.Logger.Error(err.Error())
