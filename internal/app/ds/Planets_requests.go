@@ -10,3 +10,5 @@ type PlanetsRequest struct {
 	Planet        Planet        `gorm:"foreignKey:PlanetID" json:"-"`
 	FlightNumber  uint          `json:"flight_number"`
 }
+
+//forcomm
