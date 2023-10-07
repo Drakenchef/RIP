@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/drakenchef/RIP/MyMinio"
 	"github.com/drakenchef/RIP/internal/app/config"
 	"github.com/drakenchef/RIP/internal/app/dsn"
 	"github.com/drakenchef/RIP/internal/app/handler"
-	"github.com/drakenchef/RIP/internal/app/pkg"
+	app "github.com/drakenchef/RIP/internal/app/pkg"
 	"github.com/drakenchef/RIP/internal/app/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -13,6 +14,7 @@ import (
 
 func main() {
 	logger := logrus.New()
+	minioClient := MyMinio.NewMinioClient(logger)
 	router := gin.Default()
 	conf, err := config.NewConfig(logger)
 	if err != nil {
@@ -27,7 +29,7 @@ func main() {
 	if errRep != nil {
 		logger.Fatalf("Error from repository: %s", err)
 	}
-	hand := handler.NewHandler(logger, rep)
-	application := pkg.NewApp(conf, router, logger, hand)
+	hand := handler.NewHandler(logger, rep, minioClient)
+	application := app.NewApp(conf, router, logger, hand)
 	application.RunApp()
 }
