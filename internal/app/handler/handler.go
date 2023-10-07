@@ -27,13 +27,14 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/Planets:id", h.PlanetById)
 	router.POST("/Planets", h.AddPlanet)
 	router.PUT("/Planets", h.UpdatePlanet)
-	router.POST("/delete/:id", h.DeletePlanet)
+	router.PUT("/Planets:id", h.DeletePlanet)
 
 	router.GET("/Flights", h.FlightsList)
-	router.POST("/Flights", h.AddFlight)
-	router.DELETE("/Flights", h.DeleteFlight)
-	router.PUT("/Flights", h.UpdateFlight)
+	router.DELETE("/Flights:id", h.DeleteFlight)
+	router.PUT("/Flights:id", h.UpdateFlight)
 
+	router.GET(DestinationHikes, h.DestinationHikesList)
+	router.POST(DestinationHikes, h.AddDestinationToHike)
 	router.GET(users, h.UsersList)
 
 	registerStatic(router)
