@@ -63,7 +63,7 @@ func (h *Handler) AddPlanet(ctx *gin.Context) {
 		return
 	}
 	if newPlanet.Name == "" {
-		h.errorHandler(ctx, http.StatusBadRequest, cityCannotBeEmpty)
+		h.errorHandler(ctx, http.StatusBadRequest, planetCannotBeEmpty)
 		return
 	}
 	if err := h.Repository.AddPlanet(&newPlanet); err != nil {
