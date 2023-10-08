@@ -15,4 +15,5 @@ type FlightRequest struct {
 	UserID         uint      `json:"-"`
 	ModerID        uint      `json:"-"`
 	User           Users     `gorm:"foreignKey:UserID" json:"-"`
+	Planets        []Planet  `gorm:"many2many:planets_requests;"`
 }
