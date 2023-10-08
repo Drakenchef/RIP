@@ -7,7 +7,7 @@ import (
 
 func (r *Repository) FlightsList() (*[]ds.FlightRequest, error) {
 	var flights []ds.FlightRequest
-	result := r.db.Preload("User").Find(&flights)
+	result := r.db.Preload("User").Where("status =?", utils.ExistsString).Find(&flights)
 	return &flights, result.Error
 }
 
@@ -16,14 +16,26 @@ func (r *Repository) FlightById(id uint) (*ds.FlightRequest, error) {
 	result := r.db.Preload("User").First(&flight, id)
 	return &flight, result.Error
 }
+
 func (r *Repository) DeleteFlight(id uint) error {
-	flight := ds.FlightRequest{}
-	if result := r.db.First(&flight, id); result.Error != nil {
-		return result.Error
+	//flight := ds.FlightRequest{}
+	//if result := r.db.Where("status = ?", "удалён").First(&newStatus); result.Error != nil {
+	//	return result.Error
+	//}
+	//hike.StatusID = newStatus.ID
+	//if result := r.db.First(&flight, id); result.Error != nil {
+	//	return result.Error
+	//}
+	//result := r.db.Save(&flight)
+	//return result.Error
+	err := r.db.Model(&ds.FlightRequest{}).Where("id = ?", id).Update("status", utils.DeletedString)
+	if err != nil {
+		return err.Error
 	}
-	result := r.db.Save(&flight)
-	return result.Error
+	return nil
+
 }
+
 func (r *Repository) UpdateFlight(updatedFlight *ds.FlightRequest) error {
 	oldFlight := ds.FlightRequest{}
 	if result := r.db.First(&oldFlight, updatedFlight.ID); result.Error != nil {

@@ -9,7 +9,7 @@ import (
 
 func (h *Handler) FlightsList(ctx *gin.Context) {
 	flights, err := h.Repository.FlightsList()
-	if flightIdString := ctx.Query("flights"); flightIdString != "" {
+	if flightIdString := ctx.Query("Flights"); flightIdString != "" {
 		flightById(ctx, h, flightIdString)
 		return
 	}
@@ -18,7 +18,7 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 		h.errorHandler(ctx, http.StatusNoContent, err)
 		return
 	}
-	h.successHandler(ctx, "flights", flights)
+	h.successHandler(ctx, "Flights", flights)
 }
 func flightById(ctx *gin.Context, h *Handler, flightStringID string) {
 	flightID, err := strconv.Atoi(flightStringID)
@@ -31,7 +31,7 @@ func flightById(ctx *gin.Context, h *Handler, flightStringID string) {
 		h.errorHandler(ctx, http.StatusInternalServerError, errDB)
 		return
 	}
-	h.successHandler(ctx, "flight", flight)
+	h.successHandler(ctx, "Flight", flight)
 }
 
 func (h *Handler) DeleteFlight(ctx *gin.Context) {
@@ -51,7 +51,9 @@ func (h *Handler) DeleteFlight(ctx *gin.Context) {
 		return
 	}
 
-	h.successHandler(ctx, "flight_id", request.ID)
+	h.successHandler(ctx, "Flight_id", request.ID)
+	//ctx.Redirect(http.StatusOK, "/Flights")
+	//h.FlightsList(ctx)
 }
 
 func (h *Handler) UpdateFlight(ctx *gin.Context) {
@@ -69,7 +71,7 @@ func (h *Handler) UpdateFlight(ctx *gin.Context) {
 		return
 	}
 
-	h.successHandler(ctx, "updated_hike", gin.H{
+	h.successHandler(ctx, "updated_flight", gin.H{
 		"id":              updatedFlight.ID,
 		"date_create":     updatedFlight.DateCreate,
 		"date_formation":  updatedFlight.DateFormation,

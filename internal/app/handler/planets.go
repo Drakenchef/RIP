@@ -16,7 +16,7 @@ func (h *Handler) PlanetsList(ctx *gin.Context) {
 			})
 			return
 		}
-		ctx.HTML(http.StatusOK, "index.html", gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"Planets": planets,
 		})
 	} else {
@@ -25,14 +25,29 @@ func (h *Handler) PlanetsList(ctx *gin.Context) {
 		if err != nil {
 			// обработка ошибки
 		}
-		ctx.HTML(http.StatusOK, "index.html", gin.H{
+		ctx.JSON(http.StatusOK, gin.H{
 			"Planets": filteredPlanets,
 		})
 
 	}
 }
 
-func (h *Handler) PlanetById(ctx *gin.Context) {
+//func (h *Handler) PlanetsList(ctx *gin.Context) {
+//	if idStr := ctx.Query("planet"); idStr != "" {
+//		planetById(ctx, h, idStr)
+//		return
+//	}
+//
+//	planets, err := h.Repository.PlanetsList()
+//	if err != nil {
+//		h.errorHandler(ctx, http.StatusInternalServerError, err)
+//		return
+//	}
+//
+//	h.successHandler(ctx, "Planets", planets)
+//}
+
+func (h *Handler) planetById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	planets, err := h.Repository.PlanetById(id)
 	if err != nil {
@@ -41,15 +56,30 @@ func (h *Handler) PlanetById(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.HTML(http.StatusOK, "info.html", gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"Planets": planets,
 	})
 }
 
+//func planetById(ctx *gin.Context, h *Handler, idStr string) {
+//	//id, err := strconv.Atoi(idStr)
+//	//if err != nil {
+//	//	h.errorHandler(ctx, http.StatusBadRequest, err)
+//	//	return
+//	//}
+//	planet, errBD := h.Repository.PlanetById(idStr)
+//	if errBD != nil {
+//		h.errorHandler(ctx, http.StatusInternalServerError, errBD)
+//		return
+//	}
+//
+//	h.successHandler(ctx, "Planet", planet)
+//}
+
 func (h *Handler) DeletePlanet(ctx *gin.Context) {
 	id := ctx.Param("id")
 	h.Repository.DeletePlanet(id)
-	ctx.Redirect(http.StatusFound, "/")
+	ctx.Redirect(http.StatusFound, "/Planets")
 }
 
 func (h *Handler) AddPlanet(ctx *gin.Context) {
@@ -71,7 +101,8 @@ func (h *Handler) AddPlanet(ctx *gin.Context) {
 		return
 	}
 
-	h.successAddHandler(ctx, "city_id", newPlanet.ID)
+	//h.successAddHandler(ctx, "Planet_id", newPlanet.ID)
+	ctx.Redirect(http.StatusFound, "/Planets")
 }
 
 func (h *Handler) UpdatePlanet(ctx *gin.Context) {
@@ -89,7 +120,7 @@ func (h *Handler) UpdatePlanet(ctx *gin.Context) {
 		return
 	}
 
-	h.successHandler(ctx, "updated_city", gin.H{
+	h.successHandler(ctx, "updated_planet", gin.H{
 		"id":          updatedPlanet.ID,
 		"name":        updatedPlanet.Name,
 		"description": updatedPlanet.Description,
