@@ -14,3 +14,23 @@ INSERT INTO flight_requests (date_create,date_formation, date_completion, status
 INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (1, 1, null);
 INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (2, 2, null);
 INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 3, null);
+
+
+
+
+ALTER TABLE planets_requests DROP COLUMN created_at;
+ALTER TABLE planets_requests DROP COLUMN updated_at;
+ALTER TABLE planets_requests DROP COLUMN deleted_at;
+ALTER TABLE planets_requests DROP COLUMN id;
+
+ALTER TABLE users DROP COLUMN created_at;
+ALTER TABLE users DROP COLUMN updated_at;
+ALTER TABLE users DROP COLUMN deleted_at;
+
+ALTER TABLE flight_requests DROP COLUMN created_at;
+ALTER TABLE flight_requests DROP COLUMN updated_at;
+ALTER TABLE flight_requests DROP COLUMN deleted_at;
+
+ALTER TABLE planets DROP COLUMN created_at;
+ALTER TABLE planets DROP COLUMN updated_at;
+ALTER TABLE planets DROP COLUMN deleted_at;
