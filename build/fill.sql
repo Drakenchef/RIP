@@ -13,10 +13,10 @@ INSERT INTO flight_requests (date_create,date_formation, date_completion, status
 
 INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (1, 1, 1);
 INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (2, 2, 1);
-INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (2, 1, 2);
-INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 1, 1);
-INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 2, 3);
-INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 3, 2);
+INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 3, 1);
+-- INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 1, 1);
+-- INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 2, 3);
+-- INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 3, 2);
 
 
 
