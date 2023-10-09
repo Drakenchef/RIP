@@ -64,3 +64,24 @@ func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 
 	h.successAddHandler(ctx, "updated_planet_request", planetRequest)
 }
+
+func (h *Handler) DeletePlanetRequest(ctx *gin.Context) {
+	var request struct {
+		FRID     uint `json:"fr_id"`
+		PlanetId uint `json:"planet_id"`
+	}
+	if err := ctx.BindJSON(&request); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
+	}
+	if request.FRID == 0 || request.PlanetId == 0 {
+		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+		return
+	}
+	if err := h.Repository.DeletePlanetRequest(request.FRID, request.PlanetId); err != nil {
+		h.errorHandler(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.successHandler(ctx, "fr_id", request.FRID)
+}

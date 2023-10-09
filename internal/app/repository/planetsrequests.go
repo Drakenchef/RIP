@@ -39,3 +39,12 @@ func (r *Repository) AddPlanetToRequest(pr *ds.PlanetsRequest) error {
 	}
 	return nil
 }
+
+func (r *Repository) DeletePlanetRequest(frid, planetid uint) error {
+	var planetsrequest ds.PlanetsRequest
+	err := r.db.Where("fr_id = ? AND planet_id = ?", frid, planetid).Delete(&planetsrequest).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

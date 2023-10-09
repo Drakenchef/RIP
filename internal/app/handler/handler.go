@@ -35,6 +35,7 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 
 	router.GET("/PlanetsRequests", h.PlanetsRequestsList)
 	router.POST("/PlanetsRequests", h.AddPlanetToRequest)
+	router.DELETE("/PlanetsRequests", h.DeletePlanetRequest)
 	router.PUT("/PlanetsRequests", h.UpdatePlanetNumberInRequest)
 
 	router.GET("/users", h.UsersList)
