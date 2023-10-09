@@ -33,9 +33,14 @@ func (r *Repository) PlanetById(id string) (*ds.Planet, error) {
 	return &planets, nil
 }
 
-func (r *Repository) DeletePlanet(id string) {
-	query := "UPDATE Planets SET is_delete = true WHERE id = $1"
-	r.db.Exec(query, id)
+func (r *Repository) DeletePlanet(id uint) error {
+	//query := "UPDATE Planets SET is_delete = true WHERE id = $1"
+	//r.db.Exec(query, id)
+	err := r.db.Model(&ds.Planet{}).Where("id = ?", id).Update("is_delete", true)
+	if err != nil {
+		return err.Error
+	}
+	return nil
 }
 func (r *Repository) AddPlanet(planet *ds.Planet) error {
 	result := r.db.Create(&planet)
@@ -67,7 +72,9 @@ func (r *Repository) UpdatePlanet(updatedPlanet *ds.Planet) error {
 	if updatedPlanet.Type != "" {
 		oldPlanet.Type = updatedPlanet.Type
 	}
-
+	if updatedPlanet.IsDelete != true {
+		oldPlanet.IsDelete = updatedPlanet.IsDelete
+	}
 	*updatedPlanet = oldPlanet
 	result := r.db.Save(updatedPlanet)
 	return result.Error

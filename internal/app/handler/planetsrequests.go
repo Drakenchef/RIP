@@ -22,10 +22,10 @@ func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
 	}
-	if planetRequest.ID != 0 {
-		h.errorHandler(ctx, http.StatusBadRequest, idMustBeEmpty)
-		return
-	}
+	//if planetRequest.ID != 0 {
+	//	h.errorHandler(ctx, http.StatusBadRequest, idMustBeEmpty)
+	//	return
+	//}
 	if planetRequest.FlightNumber == 0 {
 		h.errorHandler(ctx, http.StatusBadRequest, flightNumberCannotBeEmpty)
 		return
@@ -41,4 +41,26 @@ func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 	}
 
 	h.successAddHandler(ctx, "updated_planet_request", planetRequest)
+}
+
+func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
+	var updatedPlanetRequest ds.PlanetsRequest
+	if err := ctx.BindJSON(&updatedPlanetRequest); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
+	}
+	if updatedPlanetRequest.FRID == 0 || updatedPlanetRequest.PlanetID == 0 {
+		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+		return
+	}
+	if err := h.Repository.UpdatePlanetNumberInRequest(&updatedPlanetRequest); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	h.successHandler(ctx, "updated_planet", gin.H{
+		"fr_id":         updatedPlanetRequest.FRID,
+		"planet_id":     updatedPlanetRequest.PlanetID,
+		"flight_number": updatedPlanetRequest.FlightNumber,
+	})
 }

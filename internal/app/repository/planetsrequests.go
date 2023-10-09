@@ -18,3 +18,17 @@ func (r *Repository) AddPlanetToRequest(pr *ds.PlanetsRequest) error {
 	}
 	return nil
 }
+
+func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *ds.PlanetsRequest) error {
+	var oldPlanetRequest ds.PlanetsRequest
+	if result := r.db.First(&oldPlanetRequest, updatedPlanetRequest.FRID, updatedPlanetRequest.PlanetID); result.Error != nil {
+		return result.Error
+	}
+	if updatedPlanetRequest.FlightNumber != 0 {
+		oldPlanetRequest.FlightNumber = updatedPlanetRequest.FlightNumber
+	}
+
+	*updatedPlanetRequest = oldPlanetRequest
+	result := r.db.Save(updatedPlanetRequest)
+	return result.Error
+}

@@ -1,12 +1,12 @@
 package ds
 
 import (
-	"gorm.io/gorm"
 	"time"
 )
 
 type FlightRequest struct {
-	gorm.Model
+	//gorm.Model
+	ID             uint      `json:"id" gorm:"primary_key"`
 	DateCreate     time.Time `json:"date_create"`
 	DateFormation  time.Time `json:"date_formation"`
 	DateCompletion time.Time `json:"date_completion"`

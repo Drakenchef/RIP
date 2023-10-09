@@ -24,7 +24,7 @@ INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 3, 2);
 -- ALTER TABLE planets_requests DROP COLUMN created_at;
 -- ALTER TABLE planets_requests DROP COLUMN updated_at;
 -- ALTER TABLE planets_requests DROP COLUMN deleted_at;
-ALTER TABLE planets_requests DROP COLUMN id;
+-- ALTER TABLE planets_requests DROP COLUMN id;
 
 -- ALTER TABLE users DROP COLUMN created_at;
 -- ALTER TABLE users DROP COLUMN updated_at;

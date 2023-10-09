@@ -77,9 +77,26 @@ func (h *Handler) planetById(ctx *gin.Context) {
 //}
 
 func (h *Handler) DeletePlanet(ctx *gin.Context) {
-	id := ctx.Param("id")
-	h.Repository.DeletePlanet(id)
-	ctx.Redirect(http.StatusFound, "/Planets")
+	//id := ctx.Param("id")
+	//h.Repository.DeletePlanet(id)
+	//ctx.Redirect(http.StatusFound, "/Planets")
+	var request struct {
+		ID uint `json:"id"`
+	}
+	if err := ctx.BindJSON(&request); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
+	}
+	if request.ID == 0 {
+		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+		return
+	}
+	if err := h.Repository.DeletePlanet(request.ID); err != nil {
+		h.errorHandler(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.successHandler(ctx, "Planet_id", request.ID)
 }
 
 func (h *Handler) AddPlanet(ctx *gin.Context) {
@@ -129,5 +146,6 @@ func (h *Handler) UpdatePlanet(ctx *gin.Context) {
 		"gravity":     updatedPlanet.Gravity,
 		"image":       updatedPlanet.Image,
 		"type":        updatedPlanet.Type,
+		"is_delete":   updatedPlanet.IsDelete,
 	})
 }
