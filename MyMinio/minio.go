@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	BucketName = "vikings-server"
+	BucketName = "amsflights"
 	MinioHost  = "localhost:9000"
 )
 
