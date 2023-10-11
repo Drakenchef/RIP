@@ -80,3 +80,16 @@ func (r *Repository) UpdateFlight(updatedFlight *ds.FlightRequest) error {
 	result := r.db.Save(updatedFlight)
 	return result.Error
 }
+
+func (r *Repository) UpdateFlightStatus(updatedFlight *ds.FlightRequest) error {
+	oldFlight := ds.FlightRequest{}
+	if result := r.db.First(&oldFlight, updatedFlight.ID); result.Error != nil {
+		return result.Error
+	}
+	if updatedFlight.Status != "" {
+		oldFlight.Status = updatedFlight.Status
+	}
+	*updatedFlight = oldFlight
+	result := r.db.Save(updatedFlight)
+	return result.Error
+}
