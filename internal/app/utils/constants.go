@@ -5,5 +5,5 @@ const (
 	EmptyInt        = 0
 	DestroyedString = "уничтожен"
 	DeletedString   = "удалён"
-	ExistsString    = "существует"
+	ExistsString    = "заполняется"
 )

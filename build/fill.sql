@@ -7,9 +7,9 @@ INSERT INTO planets (name, description,radius, distance, gravity, image, type,is
 INSERT INTO planets (name, description,radius, distance, gravity, image, type,is_delete) VALUES ('Марс', 'Марс - четвёртая планета от Солнца и ближайшая к Земле внешняя планета. Он известен своим красноватым оттенком, который обусловлен наличием оксида железа на его поверхности. Марс также имеет атмосферу и полярные капюшоны, а исследование этой планеты помогает ученым лучше понять процессы, протекающие на Земле.', 3389.5, 55000000, 37, 'mars.jpg','Планета',false);
 INSERT INTO planets (name, description,radius, distance, gravity, image, type,is_delete) VALUES ('Луна', 'Луна - естественный спутник Земли, являющийся единственным небесным телом, на котором человек уже побывал. Она имеет покрытую кратерами поверхность и орбитирует вокруг Земли, повышая красоту ночного неба.', 1737.1, 384400, 16.6, 'moon.jpg','Спутник',false);
 
-INSERT INTO flight_requests (date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES ('2020-01-01','2022-01-01', '2022-01-10', 'существует', 'AMS123', 1,3);
-INSERT INTO flight_requests (date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES ('2021-02-07','2022-02-01', '2022-02-10', 'существует', 'AMS456', 2,3);
-INSERT INTO flight_requests (date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES ('2021-04-02','2022-03-01', '2022-03-10', 'существует', 'AMS789', 2,3);
+INSERT INTO flight_requests (date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES ('2020-01-01','2022-01-01', '2022-01-10', 'заполняется', 'AMS123', 1,3);
+INSERT INTO flight_requests (date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES ('2021-02-07','2022-02-01', '2022-02-10', 'заполняется', 'AMS456', 2,3);
+INSERT INTO flight_requests (date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES ('2021-04-02','2022-03-01', '2022-03-10', 'заполняется', 'AMS789', 2,3);
 
 INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (1, 1, 1);
 INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (2, 2, 1);

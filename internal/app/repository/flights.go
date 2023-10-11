@@ -12,9 +12,17 @@ func (r *Repository) FlightsList() (*[]ds.FlightRequest, error) {
 }
 
 func (r *Repository) FlightById(id uint) (*ds.FlightRequest, error) {
+	//flight := ds.FlightRequest{}
+	//result := r.db.Preload("User").First(&flight, id)
+	//result := r.db.Preload("User").Preload("PlanetRequest.Planet").First(&flight, id)
+	//result := r.db.Preload("Planets").First(&flight, id)
+	//planets := []ds.Planet{}
+	//result1 := r.db.Table("planets").Joins("JOIN planets_requests ON planets.id = planets_requests.planet_id").Where("planets_requests.frid = ?", id).Find(&planets)
 	flight := ds.FlightRequest{}
-	result := r.db.Preload("User").First(&flight, id)
+	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").First(&flight, id)
+
 	return &flight, result.Error
+	//return &flight, result.Error
 }
 
 func (r *Repository) DeleteFlight(id uint) error {
