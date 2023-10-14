@@ -1,16 +1,58 @@
 package handler
 
 import (
+	"errors"
 	"github.com/drakenchef/RIP/internal/app/ds"
+	"github.com/drakenchef/RIP/internal/app/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
+	"time"
 )
 
 func (h *Handler) FlightsList(ctx *gin.Context) {
 	flights, err := h.Repository.FlightsList()
-	if flightIdString := ctx.Query("Flights"); flightIdString != "" {
-		flightById(ctx, h, flightIdString)
+
+	//user id sort in requests
+	if userIdString := ctx.Query("ID"); userIdString == "" {
+		var request struct {
+			ID uint `json:"id"`
+		}
+		if err = ctx.BindJSON(&request); err != nil {
+			h.errorHandler(ctx, http.StatusBadRequest, err)
+			return
+		}
+		if request.ID == 0 {
+			h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+			return
+		}
+		var flightRequest *[]ds.FlightRequest
+		if flightRequest, err = h.Repository.FlightsListByUser(request.ID); err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, err)
+			return
+		}
+		h.successHandler(ctx, "Flights by user id", flightRequest)
+		return
+	}
+
+	//date sort in requests
+	if DateString := ctx.Query("Date"); DateString == "" {
+		var request struct {
+			DateFormation time.Time `json:"date_formation"`
+		}
+		if err = ctx.BindJSON(&request); err != nil {
+			h.errorHandler(ctx, http.StatusBadRequest, err)
+			return
+		}
+		if request.DateFormation.String() == utils.EmptyDate {
+			h.errorHandler(ctx, http.StatusBadRequest, errors.New("empty date input"))
+			return
+		}
+		var flightRequest *[]ds.FlightRequest
+		if flightRequest, err = h.Repository.FlightsListByDate(request.DateFormation.String()); err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, err)
+			return
+		}
+		h.successHandler(ctx, "Flights by date", flightRequest)
 		return
 	}
 
@@ -20,15 +62,11 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 	}
 	h.successHandler(ctx, "Flights", flights)
 }
-func flightById(ctx *gin.Context, h *Handler, flightStringID string) {
-	flightID, err := strconv.Atoi(flightStringID)
+
+func (h *Handler) UsersFlight(ctx *gin.Context) {
+	flight, err := h.Repository.UsersFlight()
 	if err != nil {
-		h.errorHandler(ctx, http.StatusBadRequest, err)
-		return
-	}
-	flight, errDB := h.Repository.FlightById(uint(flightID))
-	if errDB != nil {
-		h.errorHandler(ctx, http.StatusInternalServerError, errDB)
+		h.errorHandler(ctx, http.StatusNoContent, err)
 		return
 	}
 	h.successHandler(ctx, "Flight", flight)

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"github.com/drakenchef/RIP/internal/app/ds"
-	"github.com/drakenchef/RIP/internal/app/utils"
 )
 
 func (r *Repository) PlanetsRequestsList() (*[]ds.PlanetsRequest, error) {
@@ -25,15 +24,32 @@ func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *ds.Planet
 	return result.Error
 }
 
-func (r *Repository) AddPlanetToRequest(pr *ds.PlanetsRequest) error {
+func (r *Repository) AddPlanetToRequest(pr *struct {
+	PlanetId uint `json:"planet_id"`
+}) error {
+	//var flightRequest ds.FlightRequest
+	//if err := r.db.First(&flightRequest, pr.FRID).Error; err != nil {
+	//	flightRequest = ds.FlightRequest{ID: pr.FRID, Status: utils.ExistsString, UserID: 1}
+	//	r.db.Create(&flightRequest)
+	//}
+	//
+	//query := "INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES ($1,$2,$3);"
+	//err := r.db.Exec(query, pr.FRID, pr.PlanetID, pr.FlightNumber)
+	//if err != nil {
+	//	return err.Error
+	//}
+	//return nil
 	var flightRequest ds.FlightRequest
-	if err := r.db.First(&flightRequest, pr.FRID).Error; err != nil {
-		flightRequest = ds.FlightRequest{ID: pr.FRID, Status: utils.ExistsString, UserID: 1}
-		r.db.Create(&flightRequest)
-	}
+	r.db.Where("user_id = ?", 1).First(&flightRequest)
 
-	query := "INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES ($1,$2,$3);"
-	err := r.db.Exec(query, pr.FRID, pr.PlanetID, pr.FlightNumber)
+	if flightRequest.ID == 0 {
+		newRequest := ds.FlightRequest{UserID: 1, Status: "заполняется"}
+		r.db.Create(&newRequest)
+		flightRequest = newRequest
+	}
+	flightRequest.Status = "заполняется"
+	query := "INSERT INTO planets_requests (fr_id, planet_id) VALUES ($1,$2) ON CONFLICT DO NOTHING;"
+	err := r.db.Exec(query, flightRequest.ID, pr.PlanetId)
 	if err != nil {
 		return err.Error
 	}

@@ -32,9 +32,10 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/Flights", h.FlightsList)
 	router.DELETE("/Flights", h.DeleteFlight)
 	router.PUT("/Flights", h.UpdateFlight)
+	router.GET("/UsersFlight", h.UsersFlight)
 	//router.PUT("/Flights/:id", h.UpdateFlightStatus)
 
-	router.GET("/PlanetsRequests", h.PlanetsRequestsList)
+	//router.GET("/PlanetsRequests", h.PlanetsRequestsList)
 	router.POST("/PlanetsRequests", h.AddPlanetToRequest)
 	router.DELETE("/PlanetsRequests", h.DeletePlanetRequest)
 	router.PUT("/PlanetsRequests", h.UpdatePlanetNumberInRequest)

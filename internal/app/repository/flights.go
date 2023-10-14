@@ -7,35 +7,27 @@ import (
 
 func (r *Repository) FlightsList() (*[]ds.FlightRequest, error) {
 	var flights []ds.FlightRequest
-	result := r.db.Preload("User").Where("status =?", utils.ExistsString).Find(&flights)
+	result := r.db.Preload("User").Where("status !=?", utils.DeletedString).Find(&flights)
 	return &flights, result.Error
 }
-
-func (r *Repository) FlightById(id uint) (*ds.FlightRequest, error) {
-	//flight := ds.FlightRequest{}
-	//result := r.db.Preload("User").First(&flight, id)
-	//result := r.db.Preload("User").Preload("PlanetRequest.Planet").First(&flight, id)
-	//result := r.db.Preload("Planets").First(&flight, id)
-	//planets := []ds.Planet{}
-	//result1 := r.db.Table("planets").Joins("JOIN planets_requests ON planets.id = planets_requests.planet_id").Where("planets_requests.frid = ?", id).Find(&planets)
-	flight := ds.FlightRequest{}
-	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").First(&flight, id)
-
+func (r *Repository) UsersFlight() (*[]ds.FlightRequest, error) {
+	var flight []ds.FlightRequest
+	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ?", 1).Find(&flight)
 	return &flight, result.Error
-	//return &flight, result.Error
+}
+
+func (r *Repository) FlightsListByUser(id uint) (*[]ds.FlightRequest, error) {
+	var flights []ds.FlightRequest
+	result := r.db.Preload("User").Where("user_id = ?", id).Find(&flights)
+	return &flights, result.Error
+}
+func (r *Repository) FlightsListByDate(date string) (*[]ds.FlightRequest, error) {
+	var flight []ds.FlightRequest
+	result := r.db.Preload("User").Where("date_formation > ?", date).Find(&flight)
+	return &flight, result.Error
 }
 
 func (r *Repository) DeleteFlight(id uint) error {
-	//flight := ds.FlightRequest{}
-	//if result := r.db.Where("status = ?", "удалён").First(&newStatus); result.Error != nil {
-	//	return result.Error
-	//}
-	//hike.StatusID = newStatus.ID
-	//if result := r.db.First(&flight, id); result.Error != nil {
-	//	return result.Error
-	//}
-	//result := r.db.Save(&flight)
-	//return result.Error
 	err := r.db.Model(&ds.FlightRequest{}).Where("id = ?", id).Update("status", utils.DeletedString)
 	if err != nil {
 		return err.Error
