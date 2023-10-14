@@ -79,3 +79,13 @@ func (r *Repository) UpdatePlanet(updatedPlanet *ds.Planet) error {
 	result := r.db.Save(updatedPlanet)
 	return result.Error
 }
+
+func (r *Repository) UpdatePlanetImage(id string, newImageURL string) error {
+	planet := ds.Planet{}
+	if result := r.db.First(&planet, id); result.Error != nil {
+		return result.Error
+	}
+	planet.Image = newImageURL
+	result := r.db.Save(planet)
+	return result.Error
+}

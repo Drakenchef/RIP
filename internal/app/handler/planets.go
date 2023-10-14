@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"github.com/gin-gonic/gin"
+	"mime/multipart"
 	"net/http"
 )
 
@@ -114,4 +115,51 @@ func (h *Handler) UpdatePlanet(ctx *gin.Context) {
 		"type":        updatedPlanet.Type,
 		"is_delete":   updatedPlanet.IsDelete,
 	})
+}
+func (h *Handler) AddImage(ctx *gin.Context) {
+	file, header, err := ctx.Request.FormFile("file")
+	planetID := ctx.Request.FormValue("planet_id")
+
+	if planetID == "" {
+		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+		return
+	}
+	if header == nil || header.Size == 0 {
+		h.errorHandler(ctx, http.StatusBadRequest, headerNotFound)
+		return
+	}
+	if err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
+	}
+	defer func(file multipart.File) {
+		errLol := file.Close()
+		if errLol != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, errLol)
+			return
+		}
+	}(file)
+
+	// Upload the image to minio server.
+	newImageURL, errorCode, errImage := h.createImagePlanet(&file, header, planetID)
+	if errImage != nil {
+		h.errorHandler(ctx, errorCode, errImage)
+		return
+	}
+
+	h.successAddHandler(ctx, "image_url", newImageURL)
+}
+func (h *Handler) createImagePlanet(
+	file *multipart.File,
+	header *multipart.FileHeader,
+	planetID string,
+) (string, int, error) {
+	newImageURL, errMinio := h.createImageInMinio(file, header)
+	if errMinio != nil {
+		return "", http.StatusInternalServerError, errMinio
+	}
+	if err := h.Repository.UpdatePlanetImage(planetID, newImageURL); err != nil {
+		return "", http.StatusInternalServerError, err
+	}
+	return newImageURL, 0, nil
 }
