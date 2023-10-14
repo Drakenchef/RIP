@@ -32,21 +32,6 @@ func (h *Handler) PlanetsList(ctx *gin.Context) {
 	}
 }
 
-//func (h *Handler) PlanetsList(ctx *gin.Context) {
-//	if idStr := ctx.Query("planet"); idStr != "" {
-//		planetById(ctx, h, idStr)
-//		return
-//	}
-//
-//	planets, err := h.Repository.PlanetsList()
-//	if err != nil {
-//		h.errorHandler(ctx, http.StatusInternalServerError, err)
-//		return
-//	}
-//
-//	h.successHandler(ctx, "Planets", planets)
-//}
-
 func (h *Handler) planetById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	planets, err := h.Repository.PlanetById(id)
@@ -61,25 +46,7 @@ func (h *Handler) planetById(ctx *gin.Context) {
 	})
 }
 
-//func planetById(ctx *gin.Context, h *Handler, idStr string) {
-//	//id, err := strconv.Atoi(idStr)
-//	//if err != nil {
-//	//	h.errorHandler(ctx, http.StatusBadRequest, err)
-//	//	return
-//	//}
-//	planet, errBD := h.Repository.PlanetById(idStr)
-//	if errBD != nil {
-//		h.errorHandler(ctx, http.StatusInternalServerError, errBD)
-//		return
-//	}
-//
-//	h.successHandler(ctx, "Planet", planet)
-//}
-
 func (h *Handler) DeletePlanet(ctx *gin.Context) {
-	//id := ctx.Param("id")
-	//h.Repository.DeletePlanet(id)
-	//ctx.Redirect(http.StatusFound, "/Planets")
 	var request struct {
 		ID uint `json:"id"`
 	}
@@ -118,7 +85,6 @@ func (h *Handler) AddPlanet(ctx *gin.Context) {
 		return
 	}
 
-	//h.successAddHandler(ctx, "Planet_id", newPlanet.ID)
 	ctx.Redirect(http.StatusFound, "/Planets")
 }
 

@@ -3,17 +3,15 @@ package handler
 import (
 	"errors"
 	"github.com/drakenchef/RIP/internal/app/ds"
-	"github.com/drakenchef/RIP/internal/app/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"time"
 )
 
 func (h *Handler) FlightsList(ctx *gin.Context) {
 	flights, err := h.Repository.FlightsList()
 
 	//user id sort in requests
-	if userIdString := ctx.Query("ID"); userIdString == "" {
+	if userIdString := ctx.Query("Sort"); userIdString == "ID" {
 		var request struct {
 			ID uint `json:"id"`
 		}
@@ -35,20 +33,20 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 	}
 
 	//date sort in requests
-	if DateString := ctx.Query("Date"); DateString == "" {
+	if DateString := ctx.Query("Sort"); DateString == "Date" {
 		var request struct {
-			DateFormation time.Time `json:"date_formation"`
+			DateFormation string `json:"date_formation" time_format:"2006-01-02"`
 		}
 		if err = ctx.BindJSON(&request); err != nil {
 			h.errorHandler(ctx, http.StatusBadRequest, err)
 			return
 		}
-		if request.DateFormation.String() == utils.EmptyDate {
+		if request.DateFormation == "" {
 			h.errorHandler(ctx, http.StatusBadRequest, errors.New("empty date input"))
 			return
 		}
 		var flightRequest *[]ds.FlightRequest
-		if flightRequest, err = h.Repository.FlightsListByDate(request.DateFormation.String()); err != nil {
+		if flightRequest, err = h.Repository.FlightsListByDate(request.DateFormation); err != nil {
 			h.errorHandler(ctx, http.StatusInternalServerError, err)
 			return
 		}
@@ -95,53 +93,53 @@ func (h *Handler) DeleteFlight(ctx *gin.Context) {
 }
 
 func (h *Handler) UpdateFlight(ctx *gin.Context) {
-	if flightIdString := ctx.Query("status"); flightIdString != "" {
-		var updatedFlight ds.FlightRequest
-		if err := ctx.BindJSON(&updatedFlight); err != nil {
-			h.errorHandler(ctx, http.StatusBadRequest, err)
-			return
-		}
-		if updatedFlight.ID == 0 {
-			h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
-			return
-		}
-		if err := h.Repository.UpdateFlightStatus(&updatedFlight); err != nil {
-			h.errorHandler(ctx, http.StatusInternalServerError, err)
-			return
-		}
-
-		h.successHandler(ctx, "updated_flight", gin.H{
-			"id":     updatedFlight.ID,
-			"status": updatedFlight.Status,
-		})
-	} else {
-		var updatedFlight ds.FlightRequest
-		if err := ctx.BindJSON(&updatedFlight); err != nil {
-			h.errorHandler(ctx, http.StatusBadRequest, err)
-			return
-		}
-		if updatedFlight.ID == 0 {
-			h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
-			return
-		}
-		if err := h.Repository.UpdateFlight(&updatedFlight); err != nil {
-			h.errorHandler(ctx, http.StatusInternalServerError, err)
-			return
-		}
-
-		h.successHandler(ctx, "updated_flight", gin.H{
-			"id":              updatedFlight.ID,
-			"date_create":     updatedFlight.DateCreate,
-			"date_formation":  updatedFlight.DateFormation,
-			"date_completion": updatedFlight.DateCompletion,
-			"date_approve":    updatedFlight.DateApprove,
-			"date_refuse":     updatedFlight.DateRefuse,
-			"status":          updatedFlight.Status,
-			"ams":             updatedFlight.AMS,
-			"user_id":         updatedFlight.UserID,
-			"moder_id":        updatedFlight.ModerID,
-		})
+	var updatedFlight ds.FlightRequest
+	if err := ctx.BindJSON(&updatedFlight); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
 	}
+	if updatedFlight.ID == 0 {
+		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+		return
+	}
+	if err := h.Repository.UpdateFlight(&updatedFlight); err != nil {
+		h.errorHandler(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.successHandler(ctx, "updated_flight", gin.H{
+		"id":              updatedFlight.ID,
+		"date_create":     updatedFlight.DateCreate,
+		"date_formation":  updatedFlight.DateFormation,
+		"date_completion": updatedFlight.DateCompletion,
+		"date_approve":    updatedFlight.DateApprove,
+		"date_refuse":     updatedFlight.DateRefuse,
+		"status":          updatedFlight.Status,
+		"ams":             updatedFlight.AMS,
+		"user_id":         updatedFlight.UserID,
+		"moder_id":        updatedFlight.ModerID,
+	})
+}
+
+func (h *Handler) UpdateFlightById(ctx *gin.Context) {
+	var updatedFlight ds.FlightRequest
+	if err := ctx.BindJSON(&updatedFlight); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
+	}
+	if updatedFlight.ID == 0 {
+		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+		return
+	}
+	if err := h.Repository.UpdateFlightStatus(&updatedFlight); err != nil {
+		h.errorHandler(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.successHandler(ctx, "updated_flight", gin.H{
+		"id":     updatedFlight.ID,
+		"status": updatedFlight.Status,
+	})
 }
 
 //func (h *Handler) UpdateFlightStatus(ctx *gin.Context) {

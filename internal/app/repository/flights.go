@@ -57,7 +57,18 @@ func (r *Repository) UpdateFlight(updatedFlight *ds.FlightRequest) error {
 		oldFlight.DateRefuse = updatedFlight.DateRefuse
 	}
 	if updatedFlight.Status != "" {
-		oldFlight.Status = updatedFlight.Status
+		if updatedFlight.Status == "в работе" && oldFlight.Status == "создан" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "завёршён" && oldFlight.Status == "в работе" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "удалён" && oldFlight.Status == "отменён" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "отменён" && oldFlight.Status != "удалён" {
+			oldFlight.Status = updatedFlight.Status
+		}
 	}
 	if updatedFlight.AMS != "" {
 		oldFlight.AMS = updatedFlight.AMS
@@ -79,7 +90,19 @@ func (r *Repository) UpdateFlightStatus(updatedFlight *ds.FlightRequest) error {
 		return result.Error
 	}
 	if updatedFlight.Status != "" {
-		oldFlight.Status = updatedFlight.Status
+		if updatedFlight.Status == "в работе" && oldFlight.Status == "создан" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "завёршён" && oldFlight.Status == "в работе" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "удалён" && oldFlight.Status == "отменён" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "отменён" && oldFlight.Status != "удалён" {
+			oldFlight.Status = updatedFlight.Status
+		}
+
 	}
 	*updatedFlight = oldFlight
 	result := r.db.Save(updatedFlight)

@@ -43,11 +43,10 @@ func (r *Repository) AddPlanetToRequest(pr *struct {
 	r.db.Where("user_id = ?", 1).First(&flightRequest)
 
 	if flightRequest.ID == 0 {
-		newRequest := ds.FlightRequest{UserID: 1, Status: "заполняется"}
+		newRequest := ds.FlightRequest{UserID: 1, Status: "в работе"}
 		r.db.Create(&newRequest)
 		flightRequest = newRequest
 	}
-	flightRequest.Status = "заполняется"
 	query := "INSERT INTO planets_requests (fr_id, planet_id) VALUES ($1,$2) ON CONFLICT DO NOTHING;"
 	err := r.db.Exec(query, flightRequest.ID, pr.PlanetId)
 	if err != nil {
