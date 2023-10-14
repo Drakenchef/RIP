@@ -117,8 +117,8 @@ func (h *Handler) UpdatePlanet(ctx *gin.Context) {
 	})
 }
 func (h *Handler) AddImage(ctx *gin.Context) {
-	file, header, err := ctx.Request.FormFile("file")
-	planetID := ctx.Request.FormValue("planet_id")
+	file, header, err := ctx.Request.FormFile("image")
+	planetID := ctx.Request.FormValue("id")
 
 	if planetID == "" {
 		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
