@@ -66,9 +66,9 @@ func (r *Repository) UpdatePlanet(updatedPlanet *ds.Planet) error {
 	if updatedPlanet.Gravity != 0 {
 		oldPlanet.Gravity = updatedPlanet.Gravity
 	}
-	if updatedPlanet.Image != "" {
-		oldPlanet.Image = updatedPlanet.Image
-	}
+	//if updatedPlanet.Image != "" {
+	//	oldPlanet.Image = updatedPlanet.Image
+	//}
 	if updatedPlanet.Type != "" {
 		oldPlanet.Type = updatedPlanet.Type
 	}

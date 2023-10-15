@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) PlanetsList(ctx *gin.Context) {
@@ -68,25 +70,56 @@ func (h *Handler) DeletePlanet(ctx *gin.Context) {
 }
 
 func (h *Handler) AddPlanet(ctx *gin.Context) {
-	var newPlanet ds.Planet
-	if err := ctx.BindJSON(&newPlanet); err != nil {
-		h.errorHandler(ctx, http.StatusBadRequest, err)
-		return
-	}
-	if newPlanet.ID != 0 {
-		h.errorHandler(ctx, http.StatusBadRequest, idMustBeEmpty)
-		return
-	}
-	if newPlanet.Name == "" {
-		h.errorHandler(ctx, http.StatusBadRequest, planetCannotBeEmpty)
-		return
-	}
-	if err := h.Repository.AddPlanet(&newPlanet); err != nil {
+	file, header, err := ctx.Request.FormFile("image")
+	if err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
 	}
 
+	planetName := ctx.Request.FormValue("name")
+	description := ctx.Request.FormValue("description")
+	radius := ctx.Request.FormValue("radius")
+	distance := ctx.Request.FormValue("distance")
+	gravity := ctx.Request.FormValue("gravity")
+	types := ctx.Request.FormValue("type")
+	radiusfloat, _ := strconv.ParseFloat(radius, 64)
+	distancefloat, _ := strconv.ParseFloat(distance, 64)
+	gravityfloat, _ := strconv.ParseFloat(gravity, 64)
+
+	newPlanet := ds.Planet{
+		Name:        planetName,
+		IsDelete:    false,
+		Description: description,
+		Radius:      radiusfloat,
+		Distance:    distancefloat,
+		Gravity:     gravityfloat,
+		Type:        types,
+	}
+	if errorCode, errCreate := h.createPlanet(&newPlanet); err != nil {
+		h.errorHandler(ctx, errorCode, errCreate)
+		return
+	}
+	newImageURL, errCode, errDB := h.createImagePlanet(&file, header, fmt.Sprintf("%d", newPlanet.ID))
+	if errDB != nil {
+		h.errorHandler(ctx, errCode, errDB)
+		return
+	}
+	newPlanet.Image = newImageURL
+
 	ctx.Redirect(http.StatusFound, "/Planets")
+}
+
+func (h *Handler) createPlanet(planet *ds.Planet) (int, error) {
+	if planet.ID != 0 {
+		return http.StatusBadRequest, idMustBeEmpty
+	}
+	if planet.Name == "" {
+		return http.StatusBadRequest, planetCannotBeEmpty
+	}
+	if err := h.Repository.AddPlanet(planet); err != nil {
+		return http.StatusBadRequest, err
+	}
+	return 0, nil
 }
 
 func (h *Handler) UpdatePlanet(ctx *gin.Context) {
@@ -111,9 +144,9 @@ func (h *Handler) UpdatePlanet(ctx *gin.Context) {
 		"radius":      updatedPlanet.Radius,
 		"distance":    updatedPlanet.Distance,
 		"gravity":     updatedPlanet.Gravity,
-		"image":       updatedPlanet.Image,
-		"type":        updatedPlanet.Type,
-		"is_delete":   updatedPlanet.IsDelete,
+		//"image":       updatedPlanet.Image,
+		"type":      updatedPlanet.Type,
+		"is_delete": updatedPlanet.IsDelete,
 	})
 }
 func (h *Handler) AddImage(ctx *gin.Context) {
@@ -149,6 +182,7 @@ func (h *Handler) AddImage(ctx *gin.Context) {
 
 	h.successAddHandler(ctx, "image_url", newImageURL)
 }
+
 func (h *Handler) createImagePlanet(
 	file *multipart.File,
 	header *multipart.FileHeader,
