@@ -190,6 +190,7 @@ func (h *Handler) UpdatePlanet(ctx *gin.Context) {
 
 }
 
+// asd
 func (h *Handler) updatePlanet(planet *ds.Planet) (int, error) {
 	if planet.ID == 0 {
 		return http.StatusBadRequest, idNotFound

@@ -33,6 +33,7 @@ func (r *Repository) PlanetById(id string) (*ds.Planet, error) {
 	return &planets, nil
 }
 
+// asd
 func (r *Repository) DeletePlanet(id uint) error {
 	//query := "UPDATE Planets SET is_delete = true WHERE id = $1"
 	//r.db.Exec(query, id)
