@@ -35,18 +35,37 @@ func (h *Handler) PlanetsList(ctx *gin.Context) {
 	}
 }
 
-func (h *Handler) planetById(ctx *gin.Context) {
-	id := ctx.Param("id")
-	planets, err := h.Repository.PlanetById(id)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+func (h *Handler) PlanetById(ctx *gin.Context) {
+	//id := ctx.Param("id")
+	//planets, err := h.Repository.PlanetById(id)
+	//if err != nil {
+	//	ctx.JSON(http.StatusInternalServerError, gin.H{
+	//		"error": err.Error(),
+	//	})
+	//	return
+	//}
+	//ctx.JSON(http.StatusOK, gin.H{
+	//	"Planets": planets,
+	//})
+	var request struct {
+		ID uint `json:"id"`
+	}
+	if err := ctx.BindJSON(&request); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"Planets": planets,
-	})
+	if request.ID == 0 {
+		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+		return
+	}
+	if planet, err := h.Repository.PlanetById(request.ID); err != nil {
+		h.errorHandler(ctx, http.StatusInternalServerError, err)
+		return
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{
+			"Planet": planet,
+		})
+	}
 }
 
 func (h *Handler) DeletePlanet(ctx *gin.Context) {
@@ -70,11 +89,6 @@ func (h *Handler) DeletePlanet(ctx *gin.Context) {
 }
 
 func (h *Handler) AddPlanet(ctx *gin.Context) {
-	file, header, err := ctx.Request.FormFile("image")
-	if err != nil {
-		h.errorHandler(ctx, http.StatusBadRequest, err)
-		return
-	}
 
 	planetName := ctx.Request.FormValue("name")
 	description := ctx.Request.FormValue("description")
@@ -95,17 +109,18 @@ func (h *Handler) AddPlanet(ctx *gin.Context) {
 		Gravity:     gravityfloat,
 		Type:        types,
 	}
-	if errorCode, errCreate := h.createPlanet(&newPlanet); err != nil {
+	file, header, _ := ctx.Request.FormFile("image")
+	if errorCode, errCreate := h.createPlanet(&newPlanet); errCreate != nil {
 		h.errorHandler(ctx, errorCode, errCreate)
-		return
 	}
-	newImageURL, errCode, errDB := h.createImagePlanet(&file, header, fmt.Sprintf("%d", newPlanet.ID))
-	if errDB != nil {
-		h.errorHandler(ctx, errCode, errDB)
-		return
+	if file != nil && header.Size != 0 && header != nil {
+		newImageURL, errCode, errDB := h.createImagePlanet(&file, header, fmt.Sprintf("%d", newPlanet.ID))
+		if errDB != nil {
+			h.errorHandler(ctx, errCode, errDB)
+			return
+		}
+		newPlanet.Image = newImageURL
 	}
-	newPlanet.Image = newImageURL
-
 	ctx.Redirect(http.StatusFound, "/Planets")
 }
 

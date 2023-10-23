@@ -2,7 +2,6 @@ package repository
 
 import (
 	"github.com/drakenchef/RIP/internal/app/ds"
-	"strconv"
 	"strings"
 )
 
@@ -26,10 +25,9 @@ func (r *Repository) SearchPlanet(search string) (*[]ds.Planet, error) {
 	return &filteredPlanets, nil
 }
 
-func (r *Repository) PlanetById(id string) (*ds.Planet, error) {
+func (r *Repository) PlanetById(id uint) (*ds.Planet, error) {
 	var planets ds.Planet
-	intId, _ := strconv.Atoi(id)
-	r.db.Find(&planets, intId)
+	r.db.Find(&planets, id)
 	return &planets, nil
 }
 

@@ -24,7 +24,7 @@ func NewHandler(l *logrus.Logger, r *repository.Repository, m *minio.Client) *Ha
 
 func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/Planets", h.PlanetsList)
-	router.GET("/Planets/:id", h.planetById)
+	router.GET("/PlanetById", h.PlanetById)
 	router.POST("/Planets", h.AddPlanet)
 	router.PUT("/Planets", h.UpdatePlanet)
 	router.DELETE("/Planets", h.DeletePlanet)

@@ -35,18 +35,23 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 	//date sort in requests
 	if DateString := ctx.Query("Sort"); DateString == "Date" {
 		var request struct {
-			DateFormation string `json:"date_formation" time_format:"2006-01-02"`
+			DateFormationStart string `json:"date_formation_start" time_format:"2006-01-02"`
+			DateFormationEnd   string `json:"date_formation_end" time_format:"2006-01-02"`
 		}
 		if err = ctx.BindJSON(&request); err != nil {
 			h.errorHandler(ctx, http.StatusBadRequest, err)
 			return
 		}
-		if request.DateFormation == "" {
+		if request.DateFormationStart == "" {
+			h.errorHandler(ctx, http.StatusBadRequest, errors.New("empty date input"))
+			return
+		}
+		if request.DateFormationEnd == "" {
 			h.errorHandler(ctx, http.StatusBadRequest, errors.New("empty date input"))
 			return
 		}
 		var flightRequest *[]ds.FlightRequest
-		if flightRequest, err = h.Repository.FlightsListByDate(request.DateFormation); err != nil {
+		if flightRequest, err = h.Repository.FlightsListByDate(request.DateFormationStart, request.DateFormationEnd); err != nil {
 			h.errorHandler(ctx, http.StatusInternalServerError, err)
 			return
 		}
