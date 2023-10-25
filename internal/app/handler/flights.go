@@ -58,6 +58,26 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 		h.successHandler(ctx, "Flights by date", flightRequest)
 		return
 	}
+	if StatusString := ctx.Query("Sort"); StatusString == "Status" {
+		var request struct {
+			Status string `json:"status"`
+		}
+		if err = ctx.BindJSON(&request); err != nil {
+			h.errorHandler(ctx, http.StatusBadRequest, err)
+			return
+		}
+		if request.Status == "" {
+			h.errorHandler(ctx, http.StatusBadRequest, errors.New("empty date input"))
+			return
+		}
+		var flightRequest *[]ds.FlightRequest
+		if flightRequest, err = h.Repository.FlightsListByStatus(request.Status); err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, err)
+			return
+		}
+		h.successHandler(ctx, "Flights by status", flightRequest)
+		return
+	}
 
 	if err != nil {
 		h.errorHandler(ctx, http.StatusNoContent, err)

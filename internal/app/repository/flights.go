@@ -26,6 +26,11 @@ func (r *Repository) FlightsListByDate(datestart, dateend string) (*[]ds.FlightR
 	result := r.db.Preload("User").Where("date_formation > ? AND date_formation < ?", datestart, dateend).Find(&flights)
 	return &flights, result.Error
 }
+func (r *Repository) FlightsListByStatus(status string) (*[]ds.FlightRequest, error) {
+	var flights []ds.FlightRequest
+	result := r.db.Preload("User").Where("status = ?", status).Find(&flights)
+	return &flights, result.Error
+}
 
 func (r *Repository) DeleteFlight(id uint) error {
 	err := r.db.Model(&ds.FlightRequest{}).Where("id = ?", id).Update("status", utils.DeletedString)
