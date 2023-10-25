@@ -48,14 +48,6 @@ func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
 	}
-	//if planetRequest.ID != 0 {
-	//	h.errorHandler(ctx, http.StatusBadRequest, idMustBeEmpty)
-	//	return
-	//}
-	//if planetRequest.FlightNumber == 0 {
-	//	h.errorHandler(ctx, http.StatusBadRequest, flightNumberCannotBeEmpty)
-	//	return
-	//}
 	if request.PlanetId == 0 {
 		h.errorHandler(ctx, http.StatusBadRequest, fridOrPlanetIsEmpty)
 		return

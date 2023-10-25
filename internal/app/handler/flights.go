@@ -67,7 +67,7 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 			return
 		}
 		if request.Status == "" {
-			h.errorHandler(ctx, http.StatusBadRequest, errors.New("empty date input"))
+			h.errorHandler(ctx, http.StatusBadRequest, errors.New("empty status input"))
 			return
 		}
 		var flightRequest *[]ds.FlightRequest

@@ -43,7 +43,7 @@ func (r *Repository) AddPlanetToRequest(pr *struct {
 	r.db.Where("user_id = ?", 1).First(&flightRequest)
 
 	if flightRequest.ID == 0 {
-		newRequest := ds.FlightRequest{UserID: 1, Status: "в работе"}
+		newRequest := ds.FlightRequest{UserID: 1, Status: "создан"}
 		r.db.Create(&newRequest)
 		flightRequest = newRequest
 	}

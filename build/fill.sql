@@ -11,7 +11,7 @@ INSERT INTO planets (name, description,radius, distance, gravity, image, type,is
 INSERT INTO flight_requests (id,date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES (1,'2020-01-01','2022-01-01', '2022-01-10', 'создан', 'AMS123', 1,4);
 INSERT INTO flight_requests (id,date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES (2,'2021-02-07','2022-02-01', '2022-02-10', 'создан', 'AMS456', 2,4);
 INSERT INTO flight_requests (id,date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES (3,'2021-04-02','2022-03-01', '2022-03-10', 'создан', 'AMS789', 3,4);
-INSERT INTO flight_requests (id,date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES (3,'2021-05-02','2022-04-01', '2022-04-10', 'в работе', 'AMS789', 3,4);
+INSERT INTO flight_requests (id,date_create,date_formation, date_completion, status, AMS, user_id,moder_id) VALUES (4,'2021-05-02','2022-04-01', '2022-04-10', 'в работе', 'AMS789', 4,4);
 
 
 INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (1, 1, 1);
