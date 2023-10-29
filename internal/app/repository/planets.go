@@ -25,7 +25,7 @@ func (r *Repository) SearchPlanet(search string) (*[]ds.Planet, error) {
 	return &filteredPlanets, nil
 }
 
-func (r *Repository) PlanetById(id uint) (*ds.Planet, error) {
+func (r *Repository) PlanetById(id int) (*ds.Planet, error) {
 	var planets ds.Planet
 	r.db.Find(&planets, id)
 	return &planets, nil
@@ -87,4 +87,11 @@ func (r *Repository) UpdatePlanetImage(id string, newImageURL string) error {
 	planet.Image = newImageURL
 	result := r.db.Save(planet)
 	return result.Error
+}
+
+func (r *Repository) WhatFlight() (id uint, err error) {
+	var flights ds.FlightRequest
+	result := r.db.Preload("User").Where("user_id = ? AND status!=?", 1, "создан").Find(&flights).Error
+	id = flights.ID
+	return id, result
 }

@@ -5,9 +5,30 @@ import (
 	"github.com/drakenchef/RIP/internal/app/utils"
 )
 
-func (r *Repository) FlightsList() (*[]ds.FlightRequest, error) {
+//	func (r *Repository) FlightsList() (*[]ds.FlightRequest, error) {
+//		var flights []ds.FlightRequest
+//		result := r.db.Preload("User").Where("status !=?", utils.DeletedString).Find(&flights)
+//		return &flights, result.Error
+//	}
+func (r *Repository) FlightsList(userID, datestart, dateend, status string) (*[]ds.FlightRequest, error) {
 	var flights []ds.FlightRequest
-	result := r.db.Preload("User").Where("status !=?", utils.DeletedString).Find(&flights)
+	db := r.db.Preload("User").Where("status !=?", utils.DeletedString)
+
+	if userID != "" {
+		db = db.Where("user_id = ?", userID)
+	}
+
+	if datestart != "" && dateend != "" {
+		db = db.Where("date_formation > ? AND date_formation < ?", datestart, dateend)
+	}
+
+	if status != "" {
+		db = db.Where("status = ?", status)
+	}
+	for i := range flights {
+		flights[i].UserLogin = flights[i].User.Login
+	}
+	result := db.Find(&flights)
 	return &flights, result.Error
 }
 func (r *Repository) UsersFlight() (*[]ds.FlightRequest, error) {
@@ -16,16 +37,17 @@ func (r *Repository) UsersFlight() (*[]ds.FlightRequest, error) {
 	return &flight, result.Error
 }
 
-func (r *Repository) FlightsListByUser(id uint) (*[]ds.FlightRequest, error) {
-	var flights []ds.FlightRequest
-	result := r.db.Preload("User").Where("user_id = ?", id).Find(&flights)
-	return &flights, result.Error
-}
-func (r *Repository) FlightsListByDate(datestart, dateend string) (*[]ds.FlightRequest, error) {
-	var flights []ds.FlightRequest
-	result := r.db.Preload("User").Where("date_formation > ? AND date_formation < ?", datestart, dateend).Find(&flights)
-	return &flights, result.Error
-}
+//	func (r *Repository) FlightsListByUser(id uint) (*[]ds.FlightRequest, error) {
+//		var flights []ds.FlightRequest
+//		result := r.db.Preload("User").Where("user_id = ?", id).Find(&flights)
+//		return &flights, result.Error
+//	}
+//
+//	func (r *Repository) FlightsListByDate(datestart, dateend string) (*[]ds.FlightRequest, error) {
+//		var flights []ds.FlightRequest
+//		result := r.db.Preload("User").Where("date_formation > ? AND date_formation < ?", datestart, dateend).Find(&flights)
+//		return &flights, result.Error
+//	}
 func (r *Repository) FlightsListByStatus(status string) (*[]ds.FlightRequest, error) {
 	var flights []ds.FlightRequest
 	result := r.db.Preload("User").Where("status = ?", status).Find(&flights)
@@ -54,12 +76,6 @@ func (r *Repository) UpdateFlight(updatedFlight *ds.FlightRequest) error {
 	}
 	if updatedFlight.DateCompletion.String() != utils.EmptyDate {
 		oldFlight.DateCompletion = updatedFlight.DateCompletion
-	}
-	if updatedFlight.DateApprove.String() != utils.EmptyDate {
-		oldFlight.DateApprove = updatedFlight.DateApprove
-	}
-	if updatedFlight.DateRefuse.String() != utils.EmptyDate {
-		oldFlight.DateRefuse = updatedFlight.DateRefuse
 	}
 	if updatedFlight.Status != "" {
 		if updatedFlight.Status == "в работе" && oldFlight.Status == "создан" {
@@ -112,4 +128,55 @@ func (r *Repository) UpdateFlightStatus(updatedFlight *ds.FlightRequest) error {
 	*updatedFlight = oldFlight
 	result := r.db.Save(updatedFlight)
 	return result.Error
+}
+
+func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, error) {
+	var flight ds.FlightRequest
+	result := r.db.First(&flight, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	// Меняем статус тут
+	if flight.Status == "создан" {
+		flight.Status = "в работе"
+	} else if flight.Status == "в работе" {
+		flight.Status = "отменён"
+	}
+
+	// Сохраняем изменения в базе данных
+	if err := r.db.Save(&flight).Error; err != nil {
+		return nil, err
+	}
+
+	return &flight, nil
+}
+func (r *Repository) ModerUpdateFlightStatusById(id int) (*ds.FlightRequest, error) {
+	var flight ds.FlightRequest
+	result := r.db.First(&flight, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	// Меняем статус тут
+	if flight.Status == "отменён" {
+		flight.Status = "удалён"
+	}
+
+	// Сохраняем изменения в базе данных
+	if err := r.db.Save(&flight).Error; err != nil {
+		return nil, err
+	}
+
+	return &flight, nil
+}
+
+func (r *Repository) FlightById(id string) (*ds.FlightRequest, error) {
+	//var flight ds.FlightRequest
+	//intId, _ := strconv.Atoi(id)
+	//r.db.Find(&flight, intId)
+	//return &flight, nil
+	var flight ds.FlightRequest
+	result := r.db.Preload("PlanetsRequest.Planet").Where("id", id).Find(&flight)
+	return &flight, result.Error
 }

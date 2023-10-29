@@ -10,6 +10,10 @@ import (
 )
 
 func (h *Handler) PlanetsList(ctx *gin.Context) {
+	//req_id, errr := h.Repository.WhatFlight()
+	//if errr != nil {
+	//	ctx.JSON(http.StatusInternalServerError, errr.Error())
+	//}
 	searchQuery := ctx.Query("search")
 	if searchQuery == "" {
 		planets, err := h.Repository.PlanetsList()
@@ -20,7 +24,8 @@ func (h *Handler) PlanetsList(ctx *gin.Context) {
 			return
 		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"Planets": planets,
+			"Planets":   planets,
+			"Flight_id": 1,
 		})
 	} else {
 
@@ -29,43 +34,45 @@ func (h *Handler) PlanetsList(ctx *gin.Context) {
 			// обработка ошибки
 		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"Planets": filteredPlanets,
+			"Planets":   filteredPlanets,
+			"Flight_id": 1,
 		})
 
 	}
 }
 
 func (h *Handler) PlanetById(ctx *gin.Context) {
-	//id := ctx.Param("id")
-	//planets, err := h.Repository.PlanetById(id)
-	//if err != nil {
-	//	ctx.JSON(http.StatusInternalServerError, gin.H{
-	//		"error": err.Error(),
-	//	})
+	id := ctx.Param("id")
+	idint, _ := strconv.Atoi(id)
+	planets, err := h.Repository.PlanetById(idint)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"Planets": planets,
+	})
+	//var request struct {
+	//	ID uint `json:"id"`
+	//}
+	//if err := ctx.BindJSON(&request); err != nil {
+	//	h.errorHandler(ctx, http.StatusBadRequest, err)
 	//	return
 	//}
-	//ctx.JSON(http.StatusOK, gin.H{
-	//	"Planets": planets,
-	//})
-	var request struct {
-		ID uint `json:"id"`
-	}
-	if err := ctx.BindJSON(&request); err != nil {
-		h.errorHandler(ctx, http.StatusBadRequest, err)
-		return
-	}
-	if request.ID == 0 {
-		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
-		return
-	}
-	if planet, err := h.Repository.PlanetById(request.ID); err != nil {
-		h.errorHandler(ctx, http.StatusInternalServerError, err)
-		return
-	} else {
-		ctx.JSON(http.StatusOK, gin.H{
-			"Planet": planet,
-		})
-	}
+	//if request.ID == 0 {
+	//	h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+	//	return
+	//}
+	//if planet, err := h.Repository.PlanetById(request.ID); err != nil {
+	//	h.errorHandler(ctx, http.StatusInternalServerError, err)
+	//	return
+	//} else {
+	//	ctx.JSON(http.StatusOK, gin.H{
+	//		"Planet": planet,
+	//	})
+	//}
 }
 
 func (h *Handler) DeletePlanet(ctx *gin.Context) {
@@ -166,8 +173,8 @@ func (h *Handler) createPlanet(planet *ds.Planet) (int, error) {
 //}
 
 func (h *Handler) UpdatePlanet(ctx *gin.Context) {
-
-	planetId := ctx.Request.FormValue("id")
+	planetId := ctx.Param("id")
+	//planetId := ctx.Request.FormValue("id")
 	planetName := ctx.Request.FormValue("name")
 	description := ctx.Request.FormValue("description")
 	radius := ctx.Request.FormValue("radius")

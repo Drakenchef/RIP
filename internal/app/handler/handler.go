@@ -24,16 +24,18 @@ func NewHandler(l *logrus.Logger, r *repository.Repository, m *minio.Client) *Ha
 
 func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/Planets", h.PlanetsList)
-	router.GET("/PlanetById", h.PlanetById)
+	router.GET("/Planet/:id", h.PlanetById)
 	router.POST("/Planets", h.AddPlanet)
-	router.PUT("/Planets", h.UpdatePlanet)
+	router.PUT("/Planets/:id", h.UpdatePlanet)
 	router.DELETE("/Planets", h.DeletePlanet)
 	//router.POST("/PlanetImage", h.AddImage)
 
 	router.GET("/Flights", h.FlightsList)
+	router.GET("/Flights/:id", h.FlightById)
 	router.DELETE("/Flights", h.DeleteFlight)
 	router.PUT("/Flights", h.UpdateFlight)
-	router.PUT("/FlightsUpdate", h.UpdateFlightById)
+	router.PUT("/FlightsUser/:id", h.UserUpdateFlightStatusById)
+	router.PUT("/FlightsModer/:id", h.ModerUpdateFlightStatusById)
 	router.GET("/UsersFlight", h.UsersFlight)
 	//router.PUT("/Flights/:id", h.UpdateFlightStatus)
 
