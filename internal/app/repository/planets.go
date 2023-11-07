@@ -89,9 +89,11 @@ func (r *Repository) UpdatePlanetImage(id string, newImageURL string) error {
 	return result.Error
 }
 
-func (r *Repository) WhatFlight() (id uint, err error) {
-	var flights ds.FlightRequest
-	result := r.db.Preload("User").Where("user_id = ? AND status!=?", 1, "создан").Find(&flights).Error
-	id = flights.ID
-	return id, result
+func (r *Repository) GetUserRequestID(userID int) (int, error) {
+	var userRequestID int
+	err := r.db.Table("flight_requests").Select("user_id").Where("user_id = ? AND status = ?", userID, "создан").Scan(&userRequestID).Error
+	if err != nil {
+		return 0, err
+	}
+	return userRequestID, nil
 }

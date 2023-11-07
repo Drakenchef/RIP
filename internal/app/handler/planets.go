@@ -9,11 +9,34 @@ import (
 	"strconv"
 )
 
+//	func (h *Handler) PlanetsList(ctx *gin.Context) {
+//		searchQuery := ctx.Query("search")
+//		if searchQuery == "" {
+//			planets, err := h.Repository.PlanetsList()
+//			if err != nil {
+//				ctx.JSON(http.StatusInternalServerError, gin.H{
+//					"error": err.Error(),
+//				})
+//				return
+//			}
+//			ctx.JSON(http.StatusOK, gin.H{
+//				"Planets":   planets,
+//				"Flight_id": user_request_id,
+//			})
+//		} else {
+//
+//			filteredPlanets, err := h.Repository.SearchPlanet(searchQuery)
+//			if err != nil {
+//				// обработка ошибки
+//			}
+//			ctx.JSON(http.StatusOK, gin.H{
+//				"Planets":   filteredPlanets,
+//				"Flight_id": user_request_id,
+//			})
+//
+//		}
+//	}
 func (h *Handler) PlanetsList(ctx *gin.Context) {
-	//req_id, errr := h.Repository.WhatFlight()
-	//if errr != nil {
-	//	ctx.JSON(http.StatusInternalServerError, errr.Error())
-	//}
 	searchQuery := ctx.Query("search")
 	if searchQuery == "" {
 		planets, err := h.Repository.PlanetsList()
@@ -23,21 +46,37 @@ func (h *Handler) PlanetsList(ctx *gin.Context) {
 			})
 			return
 		}
+		// Получаем id заявки пользователя
+		userRequestID, err := h.Repository.GetUserRequestID(1)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 		ctx.JSON(http.StatusOK, gin.H{
 			"Planets":   planets,
-			"Flight_id": 1,
+			"Flight_id": userRequestID,
 		})
 	} else {
-
 		filteredPlanets, err := h.Repository.SearchPlanet(searchQuery)
 		if err != nil {
-			// обработка ошибки
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		// Получаем id заявки пользователя
+		userRequestID, err := h.Repository.GetUserRequestID(1)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
 		}
 		ctx.JSON(http.StatusOK, gin.H{
 			"Planets":   filteredPlanets,
-			"Flight_id": 1,
+			"Flight_id": userRequestID,
 		})
-
 	}
 }
 
