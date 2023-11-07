@@ -79,6 +79,7 @@ func (r *Repository) UpdatePlanet(updatedPlanet *ds.Planet) error {
 	return result.Error
 }
 
+// asd
 func (r *Repository) UpdatePlanetImage(id string, newImageURL string) error {
 	planet := ds.Planet{}
 	if result := r.db.First(&planet, id); result.Error != nil {
