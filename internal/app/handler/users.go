@@ -3,6 +3,7 @@ package handler
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"github.com/drakenchef/RIP/internal/app/role"
@@ -40,13 +41,13 @@ func (h *Handler) Login(ctx *gin.Context) {
 		})
 
 		if token == nil {
-			h.errorHandler(ctx, http.StatusInternalServerError, tokenIsNil)
+			h.errorHandler(ctx, http.StatusInternalServerError, errors.New("token Is Nil"))
 			return
 		}
 
 		strToken, err := token.SignedString([]byte(cfg.JWT.Token))
 		if err != nil {
-			h.errorHandler(ctx, http.StatusInternalServerError, cannotCreateToken)
+			h.errorHandler(ctx, http.StatusInternalServerError, errors.New("cannot create token"))
 			return
 		}
 

@@ -2,10 +2,10 @@ package handler
 
 import (
 	"github.com/drakenchef/RIP/internal/app/config"
+	redis2 "github.com/drakenchef/RIP/internal/app/redis"
 	"github.com/drakenchef/RIP/internal/app/repository"
 	"github.com/drakenchef/RIP/internal/app/role"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v8"
 	"github.com/minio/minio-go"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -16,10 +16,10 @@ type Handler struct {
 	Repository *repository.Repository
 	Minio      *minio.Client
 	Config     *config.Config
-	Redis      *redis.Client
+	Redis      *redis2.Client
 }
 
-func NewHandler(l *logrus.Logger, r *repository.Repository, m *minio.Client, conf *config.Config, red *redis.Client) *Handler {
+func NewHandler(l *logrus.Logger, r *repository.Repository, m *minio.Client, conf *config.Config, red *redis2.Client) *Handler {
 	return &Handler{
 		Logger:     l,
 		Repository: r,
@@ -45,6 +45,11 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.PUT("/FlightsModer/:id", h.ModerUpdateFlightStatusById)
 	router.GET("/UsersFlight", h.UsersFlight)
 	//router.PUT("/Flights/:id", h.UpdateFlightStatus)
+
+	router.GET("/users", h.UsersList)
+	router.POST("/login", h.Login)
+	router.POST("/signup", h.Register)
+	router.GET("/logout", h.Logout)
 
 	//router.GET("/PlanetsRequests", h.PlanetsRequestsList)
 	router.POST("/PlanetsRequests", h.AddPlanetToRequest)
