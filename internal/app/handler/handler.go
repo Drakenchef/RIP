@@ -1,8 +1,11 @@
 package handler
 
 import (
+	"github.com/drakenchef/RIP/internal/app/config"
 	"github.com/drakenchef/RIP/internal/app/repository"
+	"github.com/drakenchef/RIP/internal/app/role"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"github.com/minio/minio-go"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -12,13 +15,17 @@ type Handler struct {
 	Logger     *logrus.Logger
 	Repository *repository.Repository
 	Minio      *minio.Client
+	Config     *config.Config
+	Redis      *redis.Client
 }
 
-func NewHandler(l *logrus.Logger, r *repository.Repository, m *minio.Client) *Handler {
+func NewHandler(l *logrus.Logger, r *repository.Repository, m *minio.Client, conf *config.Config, red *redis.Client) *Handler {
 	return &Handler{
 		Logger:     l,
 		Repository: r,
 		Minio:      m,
+		Config:     conf,
+		Redis:      red,
 	}
 }
 
@@ -45,7 +52,7 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.PUT("/PlanetsRequests", h.UpdatePlanetNumberInRequest)
 
 	//router.GET("/users", h.UsersList)
-
+	router.Use(h.WithAuthCheck(role.Manager, role.Admin)).GET("/ping", h.Ping)
 	registerStatic(router)
 }
 
@@ -78,4 +85,9 @@ func (h *Handler) successAddHandler(ctx *gin.Context, key string, data interface
 		"status": "success",
 		key:      data,
 	})
+}
+
+func (h *Handler) Ping(gCtx *gin.Context) {
+	name := gCtx.Request.FormValue("name")
+	gCtx.String(http.StatusOK, "Hello, %s", name)
 }

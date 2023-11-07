@@ -1,2 +1,9 @@
 ServiceHost = "localhost"
 ServicePort = 8888
+
+# НАСТРОЙКИ РЕДИСКИ
+[Redis]
+
+# Таймауты в миллисекундах
+DialTimeout = "10s"
+ReadTimeout = "10s"
