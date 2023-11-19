@@ -35,7 +35,7 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.POST("/signup", h.Register)
 	router.GET("/logout", h.Logout)
 
-	router.GET("/Planets", h.PlanetsList)
+	router.GET("/Planets", h.WithoutAuthCheck(role.Buyer, role.Manager, role.Admin), h.PlanetsList)
 	router.GET("/Planet/:id", h.PlanetById)
 
 	router.POST("/Planets", h.WithAuthCheck(role.Manager, role.Admin), h.AddPlanet)
