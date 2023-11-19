@@ -47,7 +47,7 @@ func (h *Handler) WithAuthCheck(assignedRoles ...role.Role) func(ctx *gin.Contex
 			if myClaims.Role == oneOfAssignedRole {
 				//gCtx.Next()
 				return
-
+				//.
 			}
 		}
 		gCtx.AbortWithStatus(http.StatusForbidden)
