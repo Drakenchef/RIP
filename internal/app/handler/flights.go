@@ -103,7 +103,34 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 }
 
 func (h *Handler) UsersFlight(ctx *gin.Context) {
-	flight, err := h.Repository.UsersFlight()
+	// Получение значения userid из контекста
+	userID, exists := ctx.Get("user_id")
+	if !exists {
+		// Обработка ситуации, когда userid отсутствует в контексте
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("user_id not found in context"))
+		return
+	}
+
+	// Приведение типа, если необходимо
+	var userIDUint uint
+	switch v := userID.(type) {
+	case uint:
+		userIDUint = v
+	case int:
+		userIDUint = uint(v)
+	case string:
+		i, err := strconv.Atoi(v)
+		if err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, errors.New("failed to convert user_id to uint"))
+			return
+		}
+		userIDUint = uint(i)
+	default:
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("user_id is not of a supported type"))
+		return
+	}
+
+	flight, err := h.Repository.UsersFlight(userIDUint)
 	if err != nil {
 		h.errorHandler(ctx, http.StatusNoContent, err)
 		return

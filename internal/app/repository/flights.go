@@ -31,9 +31,9 @@ func (r *Repository) FlightsList(userID, datestart, dateend, status string) (*[]
 	result := db.Find(&flights)
 	return &flights, result.Error
 }
-func (r *Repository) UsersFlight() (*[]ds.FlightRequest, error) {
+func (r *Repository) UsersFlight(userid uint) (*[]ds.FlightRequest, error) {
 	var flight []ds.FlightRequest
-	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ?", 1).Find(&flight)
+	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ?", userid).Find(&flight)
 	return &flight, result.Error
 }
 

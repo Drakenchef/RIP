@@ -75,6 +75,7 @@ func (h *Handler) Register(ctx *gin.Context) {
 	type registerReq struct {
 		Login    string `json:"login"`
 		Password string `json:"password"`
+		Username string `json:"user_name"`
 	}
 
 	type registerResp struct {
@@ -96,14 +97,20 @@ func (h *Handler) Register(ctx *gin.Context) {
 	}
 
 	if req.Login == "" {
-		//h.errorHandler(ctx, http.StatusBadRequest, fmt.Errorf("name is empty"))
-		ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("name is empty"))
+		//h.errorHandler(ctx, http.StatusBadRequest, fmt.Errorf("login is empty"))
+		ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("login is empty"))
+		return
+	}
+	if req.Username == "" {
+		//h.errorHandler(ctx, http.StatusBadRequest, fmt.Errorf("username is empty"))
+		ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("username is empty"))
 		return
 	}
 
 	err = h.Repository.Register(&ds.Users{
 		Role:     role.Buyer,
 		Login:    req.Login,
+		UserName: req.Username,
 		Password: generateHashString(req.Password),
 	})
 
