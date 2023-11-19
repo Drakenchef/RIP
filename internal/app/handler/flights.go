@@ -186,7 +186,57 @@ func (h *Handler) UpdateFlight(ctx *gin.Context) {
 		"moder_id":        updatedFlight.ModerID,
 	})
 }
+func (h *Handler) UsersUpdateFlight(ctx *gin.Context) {
+	userID, exists := ctx.Get("user_id")
+	if !exists {
+		// Обработка ситуации, когда userid отсутствует в контексте
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("user_id not found in context"))
+		return
+	}
+	// Приведение типа, если необходимо
+	var userIDUint uint
+	switch v := userID.(type) {
+	case uint:
+		userIDUint = v
+	case int:
+		userIDUint = uint(v)
+	case string:
+		i, err := strconv.Atoi(v)
+		if err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, errors.New("failed to convert user_id to uint"))
+			return
+		}
+		userIDUint = uint(i)
+	default:
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("user_id is not of a supported type"))
+		return
+	}
 
+	var updatedFlight ds.FlightRequest
+	if err := ctx.BindJSON(&updatedFlight); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
+	}
+	//if updatedFlight.ID == 0 {
+	//	h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+	//	return
+	//}
+	if err := h.Repository.UsersUpdateFlight(&updatedFlight, userIDUint); err != nil {
+		h.errorHandler(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	h.successHandler(ctx, "updated_flight", gin.H{
+		"id":              updatedFlight.ID,
+		"date_create":     updatedFlight.DateCreate,
+		"date_formation":  updatedFlight.DateFormation,
+		"date_completion": updatedFlight.DateCompletion,
+		"status":          updatedFlight.Status,
+		"ams":             updatedFlight.AMS,
+		"user_id":         updatedFlight.UserID,
+		"moder_id":        updatedFlight.ModerID,
+	})
+}
 func (h *Handler) UserUpdateFlightStatusById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	idint, err := strconv.Atoi(id)

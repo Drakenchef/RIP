@@ -26,24 +26,13 @@ func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *ds.Planet
 
 func (r *Repository) AddPlanetToRequest(pr *struct {
 	PlanetId uint `json:"planet_id"`
-}) error {
-	//var flightRequest ds.FlightRequest
-	//if err := r.db.First(&flightRequest, pr.FRID).Error; err != nil {
-	//	flightRequest = ds.FlightRequest{ID: pr.FRID, Status: utils.ExistsString, UserID: 1}
-	//	r.db.Create(&flightRequest)
-	//}
-	//
-	//query := "INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES ($1,$2,$3);"
-	//err := r.db.Exec(query, pr.FRID, pr.PlanetID, pr.FlightNumber)
-	//if err != nil {
-	//	return err.Error
-	//}
-	//return nil
+}, userid uint) error {
 	var flightRequest ds.FlightRequest
-	r.db.Where("user_id = ?", 1).First(&flightRequest)
-
+	var user ds.Users
+	r.db.Where("user_id = ?", userid).First(&flightRequest)
+	r.db.Where("id = ?", userid).First(&user)
 	if flightRequest.ID == 0 {
-		newRequest := ds.FlightRequest{UserID: 1, Status: "создан"}
+		newRequest := ds.FlightRequest{UserID: user.ID, UserLogin: user.Login, Status: "создан"}
 		r.db.Create(&newRequest)
 		flightRequest = newRequest
 	}

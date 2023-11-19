@@ -62,7 +62,48 @@ func (r *Repository) DeleteFlight(id uint) error {
 	return nil
 
 }
-
+func (r *Repository) UsersUpdateFlight(updatedFlight *ds.FlightRequest, userid uint) error {
+	oldFlight := ds.FlightRequest{}
+	result := r.db.Where("user_id = ?", userid).Find(&oldFlight)
+	if result.Error != nil {
+		return result.Error
+	}
+	if updatedFlight.DateCreate.String() != utils.EmptyDate {
+		oldFlight.DateCreate = updatedFlight.DateCreate
+	}
+	if updatedFlight.DateFormation.String() != utils.EmptyDate {
+		oldFlight.DateFormation = updatedFlight.DateFormation
+	}
+	if updatedFlight.DateCompletion.String() != utils.EmptyDate {
+		oldFlight.DateCompletion = updatedFlight.DateCompletion
+	}
+	if updatedFlight.Status != "" {
+		if updatedFlight.Status == "в работе" && oldFlight.Status == "создан" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "завёршён" && oldFlight.Status == "в работе" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "удалён" && oldFlight.Status == "отменён" {
+			oldFlight.Status = updatedFlight.Status
+		}
+		if updatedFlight.Status == "отменён" && oldFlight.Status != "удалён" {
+			oldFlight.Status = updatedFlight.Status
+		}
+	}
+	if updatedFlight.AMS != "" {
+		oldFlight.AMS = updatedFlight.AMS
+	}
+	if updatedFlight.UserID != utils.EmptyInt {
+		oldFlight.UserID = updatedFlight.UserID
+	}
+	if updatedFlight.ModerID != utils.EmptyInt {
+		oldFlight.ModerID = updatedFlight.ModerID
+	}
+	*updatedFlight = oldFlight
+	result = r.db.Save(updatedFlight)
+	return result.Error
+}
 func (r *Repository) UpdateFlight(updatedFlight *ds.FlightRequest) error {
 	oldFlight := ds.FlightRequest{}
 	if result := r.db.First(&oldFlight, updatedFlight.ID); result.Error != nil {

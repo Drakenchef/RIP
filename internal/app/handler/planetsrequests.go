@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"errors"
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) PlanetsRequestsList(ctx *gin.Context) {
@@ -40,6 +42,31 @@ func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
 }
 
 func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
+	// Получение значения userid из контекста
+	userID, exists := ctx.Get("user_id")
+	if !exists {
+		// Обработка ситуации, когда userid отсутствует в контексте
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("user_id not found in context"))
+		return
+	}
+	// Приведение типа, если необходимо
+	var userIDUint uint
+	switch v := userID.(type) {
+	case uint:
+		userIDUint = v
+	case int:
+		userIDUint = uint(v)
+	case string:
+		i, err := strconv.Atoi(v)
+		if err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, errors.New("failed to convert user_id to uint"))
+			return
+		}
+		userIDUint = uint(i)
+	default:
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("user_id is not of a supported type"))
+		return
+	}
 	//var planetRequest ds.PlanetsRequest
 	var request struct {
 		PlanetId uint `json:"planet_id"`
@@ -53,7 +80,7 @@ func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 		return
 	}
 
-	if err := h.Repository.AddPlanetToRequest(&request); err != nil {
+	if err := h.Repository.AddPlanetToRequest(&request, userIDUint); err != nil {
 		h.errorHandler(ctx, http.StatusInternalServerError, err)
 		return
 	}
