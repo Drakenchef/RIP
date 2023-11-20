@@ -14,19 +14,27 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// @title BITOP
+// @title AMS
 // @version 1.0
-// @description Bmstu Open IT Platform
-
+// @description AMS flights
 // @contact.name API Support
-// @contact.url https://vk.com/bmstu_schedule
-// @contact.email bitop@spatecon.ru
+// @contact.url https://github.com/Drakenchef
+// @contact.email drakenchef@gmail.com
 
-// @license.name AS IS (NO WARRANTY)
-
-// @host 127.0.0.1
-// @schemes https http
+// @host localhost:8888
+// @schemes http
 // @BasePath /
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
+// ShowAccount godoc
+// @Summary      Planets
+// @Description  Get planets list
+// @Tags         planets
+// @Produce      json
+// @Router       /Planets [get]
 
 func main() {
 	logger := logrus.New()

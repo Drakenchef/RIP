@@ -10,6 +10,20 @@ import (
 	"strconv"
 )
 
+// /Users/drakenchef/go/bin/swag init -g cmd/main/main.go
+
+// PlanetsList godoc
+// @Summary Список планет
+// @Description Получение планет и фильтрация при поиске
+// @Tags Планеты
+// @Produce json
+// @Param planet query string false "Получаем определённую планету "
+// @Param search query string false "Фильтрация поиска"
+// @Success 200 {object} ds.PlanetsListResp
+// @Failure 400 {object} errorResp "Неверный запрос"
+// @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
+// @Router /Planets [get]
+
 func (h *Handler) PlanetsList(ctx *gin.Context) {
 	userID, exists := ctx.Get("user_id")
 	if !exists {
@@ -94,6 +108,18 @@ func (h *Handler) PlanetById(ctx *gin.Context) {
 	})
 }
 
+// DeletePlanet godoc
+// @Summary Удаление планеты
+// @Description Удаление планеты по её идентификатору.
+// @Security ApiKeyAuth
+// @Tags Планеты
+// @Accept json
+// @Produce json
+// @Param request body ds.DeletePlanetReq true "ID планеты для удаления"
+// @Success 200 {object} ds.DeletePlanetRes "Планеты успешно удалена"
+// @Failure 400 {object} errorResp "Неверный запрос"
+// @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
+// @Router /Planets [delete]
 func (h *Handler) DeletePlanet(ctx *gin.Context) {
 	var request struct {
 		ID uint `json:"id"`
@@ -114,6 +140,21 @@ func (h *Handler) DeletePlanet(ctx *gin.Context) {
 	h.successHandler(ctx, "Planet_id", request.ID)
 }
 
+// AddPlanet godoc
+// @Summary Создание планеты
+// @Security ApiKeyAuth
+// @Tags Планеты
+// @Description Создание планеты
+// @Accept  multipart/form-data
+// @Produce  json
+// @Param name formData string true "Название планеты"
+// @Param status formData string true "Статус планеты"
+// @Param description formData string true "Описание планеты"
+// @Param image formData file true "Изображение планеты"
+// @Success 201 {object} ds.AddPlanetResp
+// @Failure 400 {object} errorResp "Неверный запрос"
+// @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
+// @Router /Planets [post]
 func (h *Handler) AddPlanet(ctx *gin.Context) {
 
 	planetName := ctx.Request.FormValue("name")
@@ -163,6 +204,18 @@ func (h *Handler) createPlanet(planet *ds.Planet) (int, error) {
 	return 0, nil
 }
 
+// UpdatePlanet godoc
+// @Summary Обновление информации о планете
+// @Security ApiKeyAuth
+// @Tags Планеты
+// @Description Обновление информации о планете
+// @Accept json
+// @Produce json
+// @Param updated_planet body ds.UpdatePlanetReq true "Обновленная информация о планете"
+// @Success 200 {object} ds.UpdatePlanetResp
+// @Failure 400 {object} errorResp "Неверный запрос"
+// @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
+// @Router /Planets [put]
 func (h *Handler) UpdatePlanet(ctx *gin.Context) {
 	planetId := ctx.Param("id")
 	//planetId := ctx.Request.FormValue("id")

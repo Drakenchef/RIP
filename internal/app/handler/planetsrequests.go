@@ -41,6 +41,18 @@ func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
 	})
 }
 
+// AddPlanetToRequest godoc
+// @Summary Добавление планеты в заявку
+// @Security ApiKeyAuth
+// @Tags Планеты
+// @Description Добавление планеты в заявку. Если заявка не найдена, она будет сформирована
+// @Accept json
+// @Produce json
+// @Param request body ds.AddPlanetIntoFlightReq true "Данные для добавления планеты в заявку"
+// @Success 200 {object} ds.AddPlanetIntoFlightResp "ID"
+// @Failure 400 {object} errorResp "Неверный запрос"
+// @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
+// @Router /PlanetsRequests [post]
 func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 	// Получение значения userid из контекста
 	userID, exists := ctx.Get("user_id")
