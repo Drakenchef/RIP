@@ -1,0 +1,88 @@
+{
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "AMS flights",
+    "title": "AMS",
+    "contact": {
+      "name": "API Support",
+      "url": "https://github.com/Drakenchef",
+      "email": "drakenchef55@gmail.com"
+    },
+    "license": {
+      "name": "AS IS (NO WARRANTY)"
+    },
+    "version": "1.0"
+  },
+  "host": "127.0.0.1",
+  "basePath": "/",
+  "paths": {
+    "/cities": {
+      "get": {
+        "description": "Get a list of planets with optional filtering by planet name.",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "planets"
+        ],
+        "summary": "Get a list of planets",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Planet name for filtering",
+            "name": "Марс",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ds.Planets"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ds.Planet": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "image": {
+          "type": "string"
+        },
+        "is_delete": {
+          "type": "boolean"
+        },
+        "radius": {
+          "type": "number"
+        },
+        "distance": {
+          "type": "number"
+        },
+        "gravity": {
+          "type": "number"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

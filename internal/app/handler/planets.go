@@ -10,33 +10,6 @@ import (
 	"strconv"
 )
 
-//	func (h *Handler) PlanetsList(ctx *gin.Context) {
-//		searchQuery := ctx.Query("search")
-//		if searchQuery == "" {
-//			planets, err := h.Repository.PlanetsList()
-//			if err != nil {
-//				ctx.JSON(http.StatusInternalServerError, gin.H{
-//					"error": err.Error(),
-//				})
-//				return
-//			}
-//			ctx.JSON(http.StatusOK, gin.H{
-//				"Planets":   planets,
-//				"Flight_id": user_request_id,
-//			})
-//		} else {
-//
-//			filteredPlanets, err := h.Repository.SearchPlanet(searchQuery)
-//			if err != nil {
-//				// обработка ошибки
-//			}
-//			ctx.JSON(http.StatusOK, gin.H{
-//				"Planets":   filteredPlanets,
-//				"Flight_id": user_request_id,
-//			})
-//
-//		}
-//	}
 func (h *Handler) PlanetsList(ctx *gin.Context) {
 	userID, exists := ctx.Get("user_id")
 	if !exists {
@@ -119,25 +92,6 @@ func (h *Handler) PlanetById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"Planets": planets,
 	})
-	//var request struct {
-	//	ID uint `json:"id"`
-	//}
-	//if err := ctx.BindJSON(&request); err != nil {
-	//	h.errorHandler(ctx, http.StatusBadRequest, err)
-	//	return
-	//}
-	//if request.ID == 0 {
-	//	h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
-	//	return
-	//}
-	//if planet, err := h.Repository.PlanetById(request.ID); err != nil {
-	//	h.errorHandler(ctx, http.StatusInternalServerError, err)
-	//	return
-	//} else {
-	//	ctx.JSON(http.StatusOK, gin.H{
-	//		"Planet": planet,
-	//	})
-	//}
 }
 
 func (h *Handler) DeletePlanet(ctx *gin.Context) {
@@ -208,34 +162,6 @@ func (h *Handler) createPlanet(planet *ds.Planet) (int, error) {
 	}
 	return 0, nil
 }
-
-//func (h *Handler) UpdatePlanet(ctx *gin.Context) {
-//	var updatedPlanet ds.Planet
-//	if err := ctx.BindJSON(&updatedPlanet); err != nil {
-//		h.errorHandler(ctx, http.StatusBadRequest, err)
-//		return
-//	}
-//	if updatedPlanet.ID == 0 {
-//		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
-//		return
-//	}
-//	if err := h.Repository.UpdatePlanet(&updatedPlanet); err != nil {
-//		h.errorHandler(ctx, http.StatusBadRequest, err)
-//		return
-//	}
-//
-//	h.successHandler(ctx, "updated_planet", gin.H{
-//		"id":          updatedPlanet.ID,
-//		"name":        updatedPlanet.Name,
-//		"description": updatedPlanet.Description,
-//		"radius":      updatedPlanet.Radius,
-//		"distance":    updatedPlanet.Distance,
-//		"gravity":     updatedPlanet.Gravity,
-//		"image":       updatedPlanet.Image,
-//		"type":        updatedPlanet.Type,
-//		"is_delete":   updatedPlanet.IsDelete,
-//	})
-//}
 
 func (h *Handler) UpdatePlanet(ctx *gin.Context) {
 	planetId := ctx.Param("id")

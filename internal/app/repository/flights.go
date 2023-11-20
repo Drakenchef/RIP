@@ -5,11 +5,6 @@ import (
 	"github.com/drakenchef/RIP/internal/app/utils"
 )
 
-//	func (r *Repository) FlightsList() (*[]ds.FlightRequest, error) {
-//		var flights []ds.FlightRequest
-//		result := r.db.Preload("User").Where("status !=?", utils.DeletedString).Find(&flights)
-//		return &flights, result.Error
-//	}
 func (r *Repository) FlightsList(userID, datestart, dateend, status string) (*[]ds.FlightRequest, error) {
 	var flights []ds.FlightRequest
 	db := r.db.Preload("User").Where("status !=?", utils.DeletedString)
@@ -37,17 +32,6 @@ func (r *Repository) UsersFlight(userid uint) (*[]ds.FlightRequest, error) {
 	return &flight, result.Error
 }
 
-//	func (r *Repository) FlightsListByUser(id uint) (*[]ds.FlightRequest, error) {
-//		var flights []ds.FlightRequest
-//		result := r.db.Preload("User").Where("user_id = ?", id).Find(&flights)
-//		return &flights, result.Error
-//	}
-//
-//	func (r *Repository) FlightsListByDate(datestart, dateend string) (*[]ds.FlightRequest, error) {
-//		var flights []ds.FlightRequest
-//		result := r.db.Preload("User").Where("date_formation > ? AND date_formation < ?", datestart, dateend).Find(&flights)
-//		return &flights, result.Error
-//	}
 func (r *Repository) FlightsListByStatus(status string) (*[]ds.FlightRequest, error) {
 	var flights []ds.FlightRequest
 	result := r.db.Preload("User").Where("status = ?", status).Find(&flights)

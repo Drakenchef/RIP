@@ -5,7 +5,6 @@ import (
 )
 
 type FlightRequest struct {
-	//gorm.Model
 	ID             uint             `json:"id" gorm:"primary_key"`
 	DateCreate     time.Time        `json:"date_create"`
 	DateFormation  time.Time        `json:"date_formation"`
