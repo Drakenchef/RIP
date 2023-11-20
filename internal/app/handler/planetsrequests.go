@@ -48,8 +48,8 @@ func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
 // @Description Добавление планеты в заявку. Если заявка не найдена, она будет сформирована
 // @Accept json
 // @Produce json
-// @Param request body ds.AddPlanetIntoFlightReq true "Данные для добавления планеты в заявку"
-// @Success 200 {object} ds.AddPlanetIntoFlightResp "ID"
+// @Param request body ds.PlanetsRequest true "Данные для добавления планеты в заявку"
+// @Success 200 {object} ds.PlanetsRequest "ID"
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
 // @Router /PlanetsRequests [post]

@@ -76,7 +76,13 @@ func registerStatic(router *gin.Engine) {
 	router.Static("/img", "./static")
 }
 
-//request status
+// request status
+
+// MARK: - Error handler
+type errorResp struct {
+	Status      string `json:"status" example:"error"`
+	Description string `json:"description" example:"Описание ошибки"`
+}
 
 func (h *Handler) errorHandler(ctx *gin.Context, errorStatusCode int, err error) {
 	h.Logger.Error(err.Error())
