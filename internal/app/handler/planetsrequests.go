@@ -19,6 +19,17 @@ func (h *Handler) PlanetsRequestsList(ctx *gin.Context) {
 
 }
 
+// UpdatePlanetNumberInRequest godoc
+// @Summary Обновление порядка посещения планет
+// @Description Обновление порядкого номера планеты в заявке
+// @Tags Планеты в заявках
+// @Accept json
+// @Produce json
+// @Param request body ds.UpdatePlanetInRequestNumberReq true "Данные для добавления планеты в заявку"
+// @Success 200 {object} ds.UpdatePlanetInRequestNumberRes "Updated Planet In Request ID"
+// @Failure 400 {object} errorResp "Плохой запрос"
+// @Failure 500 {object} errorResp "Внутренняя ошибку"
+// @Router /PlanetsRequests [put]
 func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
 	var updatedPlanetRequest ds.PlanetsRequest
 	if err := ctx.BindJSON(&updatedPlanetRequest); err != nil {
@@ -44,12 +55,12 @@ func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
 // AddPlanetToRequest godoc
 // @Summary Добавление планеты в заявку
 // @Security ApiKeyAuth
-// @Tags Планеты
+// @Tags Планеты в заявках
 // @Description Добавление планеты в заявку. Если заявка не найдена, она будет сформирована
 // @Accept json
 // @Produce json
-// @Param request body ds.PlanetsRequest true "Данные для добавления планеты в заявку"
-// @Success 200 {object} ds.PlanetsRequest "ID"
+// @Param request body ds.AddPlanetToRequestReq true "Данные для добавления планеты в заявку"
+// @Success 200 {object} ds.AddPlanetToRequestResp "ID"
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
 // @Router /PlanetsRequests [post]
@@ -100,6 +111,17 @@ func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 	h.successAddHandler(ctx, "updated_planet_request", request)
 }
 
+// DeletePlanetRequest godoc
+// @Summary Удаление планеты из заявки
+// @Description Удаление планеты из заявки по идентификатору
+// @Tags Планеты в заявках
+// @Accept json
+// @Produce json
+// @Param request body ds.DeletePlanetInRequestReq true "Идентификатор планеты в заявке"
+// @Success 200 {object} ds.DeletePlanetInRequestRes "Удаленный идентификатор планеты"
+// @Failure 400 {object} errorResp "Плохой запрос"
+// @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
+// @Router /PlanetsRequests [delete]
 func (h *Handler) DeletePlanetRequest(ctx *gin.Context) {
 	var request struct {
 		FRID     uint `json:"fr_id"`

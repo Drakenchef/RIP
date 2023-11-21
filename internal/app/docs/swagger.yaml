@@ -1,0 +1,840 @@
+basePath: /
+definitions:
+  ds.AddPlanetResp:
+    properties:
+      planet_id:
+        description: Status   string `json:"status"`
+        type: string
+    type: object
+  ds.AddPlanetToRequestReq:
+    properties:
+      planet_id:
+        example: 1
+        type: integer
+    required:
+    - planet_id
+    type: object
+  ds.AddPlanetToRequestResp:
+    properties:
+      id:
+        type: integer
+      status:
+        type: string
+    type: object
+  ds.DeleteFlightReq:
+    properties:
+      id:
+        type: integer
+    type: object
+  ds.DeleteFlightRes:
+    properties:
+      flight_id:
+        type: integer
+      status:
+        type: string
+    type: object
+  ds.DeletePlanetInRequestReq:
+    properties:
+      id:
+        type: integer
+    type: object
+  ds.DeletePlanetInRequestRes:
+    properties:
+      deleted_planet_in_request:
+        type: integer
+      status:
+        type: string
+    type: object
+  ds.DeletePlanetReq:
+    properties:
+      id:
+        type: string
+    type: object
+  ds.DeletePlanetRes:
+    properties:
+      deleted_id:
+        type: integer
+    type: object
+  ds.FlightRequest:
+    properties:
+      ams:
+        type: string
+      date_completion;default:'0001-01-01':
+        type: string
+      date_create:
+        type: string
+      date_formation:
+        type: string
+      id:
+        type: integer
+      moder_id:
+        type: integer
+      planets_request:
+        items:
+          $ref: '#/definitions/ds.PlanetsRequest'
+        type: array
+      status:
+        type: string
+      user_id:
+        type: integer
+      user_login:
+        type: string
+    type: object
+  ds.FlightsListRes:
+    properties:
+      flight:
+        items:
+          $ref: '#/definitions/ds.FlightRequest'
+        type: array
+      status:
+        type: string
+    type: object
+  ds.FlightsListRes2:
+    properties:
+      flight:
+        items:
+          $ref: '#/definitions/ds.FlightRequest'
+        type: array
+      status:
+        type: string
+    type: object
+  ds.LoginSwaggerResp:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: string
+      token_type:
+        type: string
+    type: object
+  ds.Planet:
+    properties:
+      description:
+        type: string
+      distance:
+        type: number
+      gravity:
+        type: number
+      id:
+        description: gorm.Model
+        type: integer
+      image:
+        type: string
+      is_delete:
+        type: boolean
+      name:
+        type: string
+      radius:
+        type: number
+      type:
+        type: string
+    type: object
+  ds.PlanetsListResp:
+    properties:
+      planets:
+        description: Status  string   `json:"status"`
+        items:
+          $ref: '#/definitions/ds.Planet'
+        type: array
+    type: object
+  ds.PlanetsRequest:
+    properties:
+      flight_number:
+        type: integer
+      fr_id:
+        type: integer
+      planet:
+        $ref: '#/definitions/ds.Planet'
+      planet_id:
+        type: integer
+    type: object
+  ds.RegisterReq:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  ds.UpdateFlightReq:
+    properties:
+      ams:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+    type: object
+  ds.UpdatePlanetInRequestNumberReq:
+    properties:
+      flight_number:
+        type: integer
+      id:
+        type: integer
+    type: object
+  ds.UpdatePlanetInRequestNumberRes:
+    properties:
+      id:
+        type: integer
+      status:
+        type: string
+    type: object
+  ds.UpdatePlanetReq:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - id
+    type: object
+  ds.UpdatePlanetResp:
+    properties:
+      description:
+        description: Status      string `json:"status"`
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      name:
+        type: string
+    type: object
+  ds.UpdateStatusForModeratorReq:
+    properties:
+      flight_id:
+        type: integer
+      status:
+        type: string
+    type: object
+  ds.UpdateStatusForUserReq:
+    properties:
+      status:
+        example: в работе
+        type: string
+    type: object
+  ds.UpdatedFlightRes:
+    properties:
+      ams:
+        type: string
+      date_completion:
+        type: string
+      date_create:
+        type: string
+      date_formation:
+        type: string
+      id:
+        type: integer
+      moder_id:
+        type: integer
+      status:
+        type: string
+      user_id:
+        type: integer
+      user_login:
+        type: string
+    type: object
+  handler.errorResp:
+    properties:
+      description:
+        example: Описание ошибки
+        type: string
+      status:
+        example: error
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact:
+    email: drakenchef@gmail.com
+    name: API Support
+    url: https://github.com/Drakenchef
+  description: AMS flights
+  title: AMS
+  version: "1.0"
+paths:
+  /Flights:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление заявки по идентификатору.
+      parameters:
+      - description: Идентификатор заявки для удаления
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ds.DeleteFlightReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное удаление заявки
+          schema:
+            $ref: '#/definitions/ds.DeleteFlightRes'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Удаление заявки
+      tags:
+      - Заявки
+    get:
+      description: Получение списка заявок с фильтрами по статусу, дате начала и дате
+        окончания, пользователю.
+      parameters:
+      - description: Статус заявки.
+        in: query
+        name: status
+        type: string
+      - description: Дата начала периода фильтрации в формате '2006-01-02'.
+        in: query
+        name: date_formation_start
+        type: string
+      - description: Дата окончания периода фильтрации в формате '2006-01-02'.
+        in: query
+        name: date_formation_end
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список заявок
+          schema:
+            items:
+              $ref: '#/definitions/ds.FlightsListRes2'
+            type: array
+        "204":
+          description: Нет данных
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Список заявок
+      tags:
+      - Заявки
+    put:
+      consumes:
+      - application/json
+      description: Обновление данных о заявке.
+      parameters:
+      - description: Данные для обновления заявки
+        in: body
+        name: updatedHike
+        required: true
+        schema:
+          $ref: '#/definitions/ds.UpdateFlightReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных о заявке
+          schema:
+            $ref: '#/definitions/ds.UpdatedFlightRes'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Обновление данных о заявке
+      tags:
+      - Заявки
+  /Flights/{id}:
+    get:
+      description: Получение информации о заявке по его ID.
+      parameters:
+      - description: ID заявки
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о заявке по ID
+          schema:
+            $ref: '#/definitions/ds.FlightsListRes2'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "404":
+          description: Заявка не найдена
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      summary: Получение информации о заявке по её ID.
+      tags:
+      - Заявки
+  /FlightsModer/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Обновление статуса заявки для модератора.
+      parameters:
+      - description: Детали обновления статуса
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ds.UpdateStatusForModeratorReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление статуса
+          schema:
+            type: string
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Обновление статуса заявки для модератора
+      tags:
+      - Заявки
+  /FlightsUser/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Обновление статуса заявки для пользователя.
+      parameters:
+      - description: Детали обновления статуса
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ds.UpdateStatusForUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление статуса
+          schema:
+            type: string
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Обновление статуса заявки для пользователя.
+      tags:
+      - Заявки
+  /Planets:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление планеты по её идентификатору.
+      parameters:
+      - description: ID планеты для удаления
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ds.DeletePlanetReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Планеты успешно удалена
+          schema:
+            $ref: '#/definitions/ds.DeletePlanetRes'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Удаление планеты
+      tags:
+      - Планеты
+    get:
+      description: Получение планет и фильтрация при поиске
+      parameters:
+      - description: 'Получаем определённую планету '
+        in: query
+        name: planet
+        type: string
+      - description: Фильтрация поиска
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ds.PlanetsListResp'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      summary: Список планет
+      tags:
+      - Планеты
+    post:
+      consumes:
+      - multipart/form-data
+      description: Создание планеты
+      parameters:
+      - description: Название планеты
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Статус планеты
+        in: formData
+        name: status
+        required: true
+        type: string
+      - description: Описание планеты
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Изображение планеты
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ds.AddPlanetResp'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Создание планеты
+      tags:
+      - Планеты
+    put:
+      consumes:
+      - application/json
+      description: Обновление информации о планете
+      parameters:
+      - description: Обновленная информация о планете
+        in: body
+        name: updated_planet
+        required: true
+        schema:
+          $ref: '#/definitions/ds.UpdatePlanetReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ds.UpdatePlanetResp'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Обновление информации о планете
+      tags:
+      - Планеты
+  /PlanetsRequests:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление планеты из заявки по идентификатору
+      parameters:
+      - description: Идентификатор планеты в заявке
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ds.DeletePlanetInRequestReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Удаленный идентификатор планеты
+          schema:
+            $ref: '#/definitions/ds.DeletePlanetInRequestRes'
+        "400":
+          description: Плохой запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      summary: Удаление планеты из заявки
+      tags:
+      - Планеты в заявках
+    post:
+      consumes:
+      - application/json
+      description: Добавление планеты в заявку. Если заявка не найдена, она будет
+        сформирована
+      parameters:
+      - description: Данные для добавления планеты в заявку
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ds.AddPlanetToRequestReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID
+          schema:
+            $ref: '#/definitions/ds.AddPlanetToRequestResp'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Добавление планеты в заявку
+      tags:
+      - Планеты в заявках
+    put:
+      consumes:
+      - application/json
+      description: Обновление порядкого номера планеты в заявке
+      parameters:
+      - description: Данные для добавления планеты в заявку
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ds.UpdatePlanetInRequestNumberReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated Planet In Request ID
+          schema:
+            $ref: '#/definitions/ds.UpdatePlanetInRequestNumberRes'
+        "400":
+          description: Плохой запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибку
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      summary: Обновление порядка посещения планет
+      tags:
+      - Планеты в заявках
+  /UsersFlight:
+    get:
+      description: Получение списка заявок пользователем.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список заявок
+          schema:
+            items:
+              $ref: '#/definitions/ds.FlightsListRes2'
+            type: array
+        "204":
+          description: Нет данных
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Список заявок пользователя
+      tags:
+      - Заявки
+  /UsersFlightUpdate:
+    put:
+      consumes:
+      - application/json
+      description: Обновление данных о заявке пользователем.
+      parameters:
+      - description: Данные для обновления заявки пользователем
+        in: body
+        name: updatedHike
+        required: true
+        schema:
+          $ref: '#/definitions/ds.UpdateFlightReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление данных о заявке пользователя
+          schema:
+            $ref: '#/definitions/ds.UpdatedFlightRes'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Обновление данных о заявке пользователем
+      tags:
+      - Заявки
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Вход нового пользователя.
+      parameters:
+      - description: Детали входа
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ds.RegisterReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная аутентификация
+          schema:
+            $ref: '#/definitions/ds.LoginSwaggerResp'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "401":
+          description: Неверные учетные данные
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      summary: Аутентификация пользователя
+      tags:
+      - Пользователи
+  /logout:
+    get:
+      consumes:
+      - application/json
+      description: Завершение сеанса текущего пользователя.
+      parameters:
+      - default: '"Bearer "'
+        description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный выход
+          schema:
+            type: string
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "401":
+          description: Неверные учетные данные
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/handler.errorResp'
+      security:
+      - ApiKeyAuth: []
+      summary: Выход пользователя
+      tags:
+      - Пользователи
+  /ping:
+    get:
+      description: very friendly response
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: Show hello text
+      tags:
+      - Tests
+  /sign_up:
+    post:
+      consumes:
+      - application/json
+      description: Регистрация нового пользователя.
+      parameters:
+      - description: Детали регистрации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/ds.RegisterReq'
+      produces:
+      - application/json
+      responses: {}
+      summary: Регистрация пользователя
+      tags:
+      - Пользователи
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

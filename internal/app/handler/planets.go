@@ -23,7 +23,6 @@ import (
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
 // @Router /Planets [get]
-
 func (h *Handler) PlanetsList(ctx *gin.Context) {
 	userID, exists := ctx.Get("user_id")
 	if !exists {

@@ -28,7 +28,7 @@ func (r *Repository) FlightsList(userID, datestart, dateend, status string) (*[]
 }
 func (r *Repository) UsersFlight(userid uint) (*[]ds.FlightRequest, error) {
 	var flight []ds.FlightRequest
-	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ?", userid).Find(&flight)
+	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ? AND status = ?", userid, "создан").Find(&flight)
 	return &flight, result.Error
 }
 
@@ -66,12 +66,6 @@ func (r *Repository) UsersUpdateFlight(updatedFlight *ds.FlightRequest, userid u
 			oldFlight.Status = updatedFlight.Status
 		}
 		if updatedFlight.Status == "завёршён" && oldFlight.Status == "в работе" {
-			oldFlight.Status = updatedFlight.Status
-		}
-		if updatedFlight.Status == "удалён" && oldFlight.Status == "отменён" {
-			oldFlight.Status = updatedFlight.Status
-		}
-		if updatedFlight.Status == "отменён" && oldFlight.Status != "удалён" {
 			oldFlight.Status = updatedFlight.Status
 		}
 	}

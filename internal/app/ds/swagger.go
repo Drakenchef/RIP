@@ -10,6 +10,25 @@ type FlightsListRes2 struct {
 	Flight []FlightRequest `json:"flight"`
 }
 
+type DeletePlanetInRequestReq struct {
+	ID int `json:"id"`
+}
+
+type DeletePlanetInRequestRes struct {
+	Status                 string `json:"status"`
+	DeletedPlanetInRequest int    `json:"deleted_planet_in_request"`
+}
+
+type UpdatePlanetInRequestNumberReq struct {
+	PlanetInRequestID int `json:"id"`
+	FlightNumber      int `json:"flight_number"`
+}
+
+type UpdatePlanetInRequestNumberRes struct {
+	Status string `json:"status"`
+	ID     uint   `json:"id"`
+}
+
 type DeletePlanetRes struct {
 	DeletedId int `json:"deleted_id"`
 }
@@ -52,7 +71,7 @@ type UpdateStatusForModeratorReq struct {
 }
 
 type UpdateStatusForUserReq struct {
-	Status string `json:"status" example:"2"`
+	Status string `json:"status" example:"в работе"`
 }
 
 type DeletePlanetReq struct {
@@ -61,9 +80,9 @@ type DeletePlanetReq struct {
 
 type UpdatePlanetReq struct {
 	Id          int    `json:"id" binding:"required"`
-	Name        string `json:"city_name"`
+	Name        string `json:"name"`
 	Description string `json:"description"`
-	Status      string `json:"status"`
+	//Status      string `json:"status"`
 }
 
 type AddPlanetToRequestReq struct {
@@ -77,20 +96,20 @@ type AddPlanetToRequestResp struct {
 }
 
 type UpdatePlanetResp struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Status      string `json:"status"`
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	//Status      string `json:"status"`
 	Description string `json:"description"`
 	Image       string `json:"image"`
 }
 
 type AddPlanetResp struct {
-	Status   string `json:"status"`
+	//Status   string `json:"status"`
 	PlanetId string `json:"planet_id"`
 }
 
 type PlanetsListResp struct {
-	Status  string   `json:"status"`
+	//Status  string   `json:"status"`
 	Planets []Planet `json:"planets"`
 	//BasketId string `json:"basket_id"`
 }

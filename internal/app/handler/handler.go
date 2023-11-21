@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/drakenchef/RIP/internal/app/config"
+	_ "github.com/drakenchef/RIP/internal/app/docs"
 	redis2 "github.com/drakenchef/RIP/internal/app/redis"
 	"github.com/drakenchef/RIP/internal/app/repository"
 	"github.com/drakenchef/RIP/internal/app/role"
@@ -46,37 +47,43 @@ func (h *Handler) UserCRUD(router *gin.Engine) {
 	router.GET("/logout", h.Logout)
 }
 func (h *Handler) PlanetCRUD(router *gin.Engine) {
-	router.GET("/Planets", h.WithoutAuthCheck(role.Buyer, role.Manager, role.Admin), h.PlanetsList)
+	router.GET("/Planets", h.WithoutAuthCheck(role.Buyer, role.Moder), h.PlanetsList)
 	router.GET("/Planet/:id", h.PlanetById)
-	router.POST("/Planets", h.WithAuthCheck(role.Manager, role.Admin), h.AddPlanet)
-	router.PUT("/Planets/:id", h.WithAuthCheck(role.Manager, role.Admin), h.UpdatePlanet)
-	router.DELETE("/Planets", h.WithAuthCheck(role.Manager, role.Admin), h.DeletePlanet)
+	router.POST("/Planets", h.WithAuthCheck(role.Moder, role.Admin), h.AddPlanet)
+	router.PUT("/Planets/:id", h.WithAuthCheck(role.Moder, role.Admin), h.UpdatePlanet)
+	router.DELETE("/Planets", h.WithAuthCheck(role.Moder, role.Admin), h.DeletePlanet)
 }
 func (h *Handler) FlightCRUD(router *gin.Engine) {
-	router.GET("/Flights", h.WithAuthCheck(role.Manager, role.Admin), h.FlightsList)
-	router.GET("/Flights/:id", h.WithAuthCheck(role.Manager, role.Admin), h.FlightById)
-	router.DELETE("/Flights", h.WithAuthCheck(role.Manager, role.Admin), h.DeleteFlight)
-	router.PUT("/Flights", h.WithIdCheck(role.Manager, role.Admin), h.UpdateFlight)
-	router.PUT("/FlightsUser/:id", h.WithAuthCheck(role.Buyer), h.UserUpdateFlightStatusById)
-	router.PUT("/FlightsModer/:id", h.WithAuthCheck(role.Manager, role.Admin), h.ModerUpdateFlightStatusById)
-	router.GET("/UsersFlight", h.WithIdCheck(role.Buyer), h.UsersFlight)
-	router.PUT("/UsersFlightUpdate", h.WithIdCheck(role.Buyer, role.Manager, role.Admin), h.UsersUpdateFlight)
+	router.GET("/Flights", h.WithAuthCheck(role.Moder, role.Admin), h.FlightsList)
+	router.GET("/Flights/:id", h.WithAuthCheck(role.Moder, role.Admin), h.FlightById)
+	router.DELETE("/Flights", h.WithAuthCheck(role.Moder, role.Admin), h.DeleteFlight)
+	router.PUT("/Flights", h.WithIdCheck(role.Moder, role.Admin), h.UpdateFlight)
+	router.PUT("/FlightsUser/:id", h.WithAuthCheck(role.Buyer, role.Moder), h.UserUpdateFlightStatusById)
+	router.PUT("/FlightsModer/:id", h.WithAuthCheck(role.Moder, role.Admin), h.ModerUpdateFlightStatusById)
+	router.GET("/UsersFlight", h.WithIdCheck(role.Buyer, role.Moder), h.UsersFlight)
+	router.PUT("/UsersFlightUpdate", h.WithIdCheck(role.Buyer, role.Moder, role.Admin), h.UsersUpdateFlight)
 }
 func (h *Handler) PlanetsRequestsCRUD(router *gin.Engine) {
-	router.POST("/PlanetsRequests", h.WithIdCheck(role.Buyer, role.Manager, role.Admin), h.AddPlanetToRequest)
-	router.DELETE("/PlanetsRequests", h.WithAuthCheck(role.Buyer, role.Manager, role.Admin), h.DeletePlanetRequest)
-	router.PUT("/PlanetsRequests", h.WithAuthCheck(role.Buyer, role.Manager, role.Admin), h.UpdatePlanetNumberInRequest)
-	router.GET("/ping", h.WithAuthCheck(role.Manager, role.Admin), h.Ping)
+	router.POST("/PlanetsRequests", h.WithIdCheck(role.Buyer, role.Moder, role.Admin), h.AddPlanetToRequest)
+	router.DELETE("/PlanetsRequests", h.WithAuthCheck(role.Buyer, role.Moder, role.Admin), h.DeletePlanetRequest)
+	router.PUT("/PlanetsRequests", h.WithAuthCheck(role.Buyer, role.Moder, role.Admin), h.UpdatePlanetNumberInRequest)
+	router.GET("/ping", h.WithAuthCheck(role.Moder, role.Admin), h.Ping)
 }
 
-func registerStatic(router *gin.Engine) {
-	router.LoadHTMLGlob("static/html/*")
-	router.Static("/static", "./static")
-	router.Static("/css", "./static")
-	router.Static("/img", "./static")
-}
+//func registerStatic(router *gin.Engine) {
+//	router.LoadHTMLGlob("static/html/*")
+//	router.Static("/static", "./static")
+//	router.Static("/css", "./static")
+//	router.Static("/img", "./static")
+//}
 
 // request status
+
+func registerStatic(router *gin.Engine) {
+	router.GET("/myswagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.Static("/static", "./static")
+	router.Static("/img", "./static")
+}
 
 // MARK: - Error handler
 type errorResp struct {
