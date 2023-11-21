@@ -103,7 +103,7 @@ func (r *Repository) UpdateFlight(updatedFlight *ds.FlightRequest) error {
 		if updatedFlight.Status == "завёршён" && oldFlight.Status == "в работе" {
 			oldFlight.Status = updatedFlight.Status
 		}
-		if updatedFlight.Status == "удалён" && oldFlight.Status == "отменён" {
+		if updatedFlight.Status == "удалён" && (oldFlight.Status == "отменён" || oldFlight.Status == "завершён") {
 			oldFlight.Status = updatedFlight.Status
 		}
 		if updatedFlight.Status == "отменён" && oldFlight.Status != "удалён" {
@@ -160,7 +160,7 @@ func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, erro
 	if flight.Status == "создан" {
 		flight.Status = "в работе"
 	} else if flight.Status == "в работе" {
-		flight.Status = "отменён"
+		flight.Status = "завершён"
 	}
 
 	// Сохраняем изменения в базе данных
@@ -180,6 +180,10 @@ func (r *Repository) ModerUpdateFlightStatusById(id int) (*ds.FlightRequest, err
 	// Меняем статус тут
 	if flight.Status == "отменён" {
 		flight.Status = "удалён"
+	} else if flight.Status == "удалён" {
+		flight.Status = "завершён"
+	} else if flight.Status != "удалён" && flight.Status != "отменён" {
+		flight.Status = "отменён"
 	}
 
 	// Сохраняем изменения в базе данных

@@ -126,7 +126,7 @@ func (h *Handler) DeleteFlight(ctx *gin.Context) {
 // @Description Обновление данных о заявке.
 // @Accept json
 // @Produce json
-// @Param updatedHike body ds.UpdateFlightReq true "Данные для обновления заявки"
+// @Param updatedFLight body ds.UpdateFlightReq true "Данные для обновления заявки"
 // @Success 200 {object} ds.UpdatedFlightRes "Успешное обновление данных о заявке"
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
@@ -225,7 +225,7 @@ func (h *Handler) UsersUpdateFlight(ctx *gin.Context) {
 // @Description Обновление статуса заявки для пользователя.
 // @Accept json
 // @Produce json
-// @Param body body ds.UpdateStatusForUserReq true "Детали обновления статуса"
+// @Param id path string true "ID заявки"
 // @Success 200 {object} string "Успешное обновление статуса"
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
@@ -256,7 +256,7 @@ func (h *Handler) UserUpdateFlightStatusById(ctx *gin.Context) {
 // @Description Обновление статуса заявки для модератора.
 // @Accept json
 // @Produce json
-// @Param body body ds.UpdateStatusForModeratorReq true "Детали обновления статуса"
+// @Param id path string true "ID заявки"
 // @Success 200 {object} string "Успешное обновление статуса"
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"

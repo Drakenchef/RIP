@@ -95,7 +95,7 @@
                 "parameters": [
                     {
                         "description": "Данные для обновления заявки",
-                        "name": "updatedHike",
+                        "name": "updatedFLight",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -235,13 +235,11 @@
                 "summary": "Обновление статуса заявки для модератора",
                 "parameters": [
                     {
-                        "description": "Детали обновления статуса",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ds.UpdateStatusForModeratorReq"
-                        }
+                        "type": "string",
+                        "description": "ID заявки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -286,13 +284,11 @@
                 "summary": "Обновление статуса заявки для пользователя.",
                 "parameters": [
                     {
-                        "description": "Детали обновления статуса",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ds.UpdateStatusForUserReq"
-                        }
+                        "type": "string",
+                        "description": "ID заявки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -779,7 +775,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ds.RegisterReq"
+                            "$ref": "#/definitions/ds.LoginReq"
                         }
                     }
                 ],
@@ -885,7 +881,7 @@
                 "responses": {}
             }
         },
-        "/sign_up": {
+        "/signup": {
             "post": {
                 "description": "Регистрация нового пользователя.",
                 "consumes": [
@@ -1066,6 +1062,17 @@
                 }
             }
         },
+        "ds.LoginReq": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "ds.LoginSwaggerResp": {
             "type": "object",
             "properties": {
@@ -1150,6 +1157,9 @@
                 },
                 "password": {
                     "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
                 }
             }
         },
@@ -1221,26 +1231,6 @@
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "ds.UpdateStatusForModeratorReq": {
-            "type": "object",
-            "properties": {
-                "flight_id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                }
-            }
-        },
-        "ds.UpdateStatusForUserReq": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "string",
-                    "example": "в работе"
                 }
             }
         },

@@ -98,6 +98,13 @@ definitions:
       status:
         type: string
     type: object
+  ds.LoginReq:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
   ds.LoginSwaggerResp:
     properties:
       access_token:
@@ -154,6 +161,8 @@ definitions:
         type: string
       password:
         type: string
+      user_name:
+        type: string
     type: object
   ds.UpdateFlightReq:
     properties:
@@ -199,19 +208,6 @@ definitions:
       image:
         type: string
       name:
-        type: string
-    type: object
-  ds.UpdateStatusForModeratorReq:
-    properties:
-      flight_id:
-        type: integer
-      status:
-        type: string
-    type: object
-  ds.UpdateStatusForUserReq:
-    properties:
-      status:
-        example: в работе
         type: string
     type: object
   ds.UpdatedFlightRes:
@@ -331,7 +327,7 @@ paths:
       parameters:
       - description: Данные для обновления заявки
         in: body
-        name: updatedHike
+        name: updatedFLight
         required: true
         schema:
           $ref: '#/definitions/ds.UpdateFlightReq'
@@ -388,12 +384,11 @@ paths:
       - application/json
       description: Обновление статуса заявки для модератора.
       parameters:
-      - description: Детали обновления статуса
-        in: body
-        name: body
+      - description: ID заявки
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/ds.UpdateStatusForModeratorReq'
+        type: string
       produces:
       - application/json
       responses:
@@ -420,12 +415,11 @@ paths:
       - application/json
       description: Обновление статуса заявки для пользователя.
       parameters:
-      - description: Детали обновления статуса
-        in: body
-        name: body
+      - description: ID заявки
+        in: path
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/ds.UpdateStatusForUserReq'
+        type: string
       produces:
       - application/json
       responses:
@@ -742,7 +736,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/ds.RegisterReq'
+          $ref: '#/definitions/ds.LoginReq'
       produces:
       - application/json
       responses:
@@ -812,7 +806,7 @@ paths:
       summary: Show hello text
       tags:
       - Tests
-  /sign_up:
+  /signup:
     post:
       consumes:
       - application/json

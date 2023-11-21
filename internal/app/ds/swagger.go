@@ -66,12 +66,13 @@ type UpdateFlightReq struct {
 }
 
 type UpdateStatusForModeratorReq struct {
-	FlightID uint   `json:"flight_id"`
-	Status   string `json:"status"`
+	FlightID uint `json:"id"`
+	//Status   string `json:"status"`
 }
 
 type UpdateStatusForUserReq struct {
-	Status string `json:"status" example:"в работе"`
+	FlightID uint `json:"id"`
+	//Status   string `json:"status" example:"в работе"`
 }
 
 type DeletePlanetReq struct {
@@ -113,6 +114,3 @@ type PlanetsListResp struct {
 	Planets []Planet `json:"planets"`
 	//BasketId string `json:"basket_id"`
 }
-
-//type AddPlaIntoHikeRequest struct {
-//}

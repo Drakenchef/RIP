@@ -98,7 +98,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Данные для обновления заявки",
-                        "name": "updatedHike",
+                        "name": "updatedFLight",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -238,13 +238,11 @@ const docTemplate = `{
                 "summary": "Обновление статуса заявки для модератора",
                 "parameters": [
                     {
-                        "description": "Детали обновления статуса",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ds.UpdateStatusForModeratorReq"
-                        }
+                        "type": "string",
+                        "description": "ID заявки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -289,13 +287,11 @@ const docTemplate = `{
                 "summary": "Обновление статуса заявки для пользователя.",
                 "parameters": [
                     {
-                        "description": "Детали обновления статуса",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/ds.UpdateStatusForUserReq"
-                        }
+                        "type": "string",
+                        "description": "ID заявки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -782,7 +778,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ds.RegisterReq"
+                            "$ref": "#/definitions/ds.LoginReq"
                         }
                     }
                 ],
@@ -888,7 +884,7 @@ const docTemplate = `{
                 "responses": {}
             }
         },
-        "/sign_up": {
+        "/signup": {
             "post": {
                 "description": "Регистрация нового пользователя.",
                 "consumes": [
@@ -1069,6 +1065,17 @@ const docTemplate = `{
                 }
             }
         },
+        "ds.LoginReq": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "ds.LoginSwaggerResp": {
             "type": "object",
             "properties": {
@@ -1153,6 +1160,9 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
                 }
             }
         },
@@ -1224,26 +1234,6 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "ds.UpdateStatusForModeratorReq": {
-            "type": "object",
-            "properties": {
-                "flight_id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                }
-            }
-        },
-        "ds.UpdateStatusForUserReq": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "string",
-                    "example": "в работе"
                 }
             }
         },

@@ -21,7 +21,7 @@ import (
 // @Tags Пользователи
 // @Accept json
 // @Produce json
-// @Param request body ds.RegisterReq true "Детали входа"
+// @Param request body ds.LoginReq true "Детали входа"
 // @Success 200 {object} ds.LoginSwaggerResp "Успешная аутентификация"
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 401 {object} errorResp "Неверные учетные данные"
@@ -90,7 +90,7 @@ func (h *Handler) UsersList(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param request body ds.RegisterReq true "Детали регистрации"
-// @Router /sign_up [post]
+// @Router /signup [post]
 func (h *Handler) Register(ctx *gin.Context) {
 	type registerReq struct {
 		Login    string `json:"login"`

@@ -38,6 +38,7 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	h.UserCRUD(router)
 	h.PlanetCRUD(router)
 	h.FlightCRUD(router)
+	h.PlanetsRequestsCRUD(router)
 	registerStatic(router)
 }
 func (h *Handler) UserCRUD(router *gin.Engine) {
@@ -54,20 +55,20 @@ func (h *Handler) PlanetCRUD(router *gin.Engine) {
 	router.DELETE("/Planets", h.WithAuthCheck(role.Moder, role.Admin), h.DeletePlanet)
 }
 func (h *Handler) FlightCRUD(router *gin.Engine) {
-	router.GET("/Flights", h.WithAuthCheck(role.Moder, role.Admin), h.FlightsList)
-	router.GET("/Flights/:id", h.WithAuthCheck(role.Moder, role.Admin), h.FlightById)
-	router.DELETE("/Flights", h.WithAuthCheck(role.Moder, role.Admin), h.DeleteFlight)
-	router.PUT("/Flights", h.WithIdCheck(role.Moder, role.Admin), h.UpdateFlight)
+	router.GET("/Flights", h.WithAuthCheck(role.Moder), h.FlightsList)
+	router.GET("/Flights/:id", h.WithAuthCheck(role.Moder), h.FlightById)
+	router.DELETE("/Flights", h.WithAuthCheck(role.Moder), h.DeleteFlight)
+	router.PUT("/Flights", h.WithIdCheck(role.Moder), h.UpdateFlight)
 	router.PUT("/FlightsUser/:id", h.WithAuthCheck(role.Buyer, role.Moder), h.UserUpdateFlightStatusById)
-	router.PUT("/FlightsModer/:id", h.WithAuthCheck(role.Moder, role.Admin), h.ModerUpdateFlightStatusById)
+	router.PUT("/FlightsModer/:id", h.WithAuthCheck(role.Moder), h.ModerUpdateFlightStatusById)
 	router.GET("/UsersFlight", h.WithIdCheck(role.Buyer, role.Moder), h.UsersFlight)
-	router.PUT("/UsersFlightUpdate", h.WithIdCheck(role.Buyer, role.Moder, role.Admin), h.UsersUpdateFlight)
+	router.PUT("/UsersFlightUpdate", h.WithIdCheck(role.Buyer, role.Moder), h.UsersUpdateFlight)
 }
 func (h *Handler) PlanetsRequestsCRUD(router *gin.Engine) {
-	router.POST("/PlanetsRequests", h.WithIdCheck(role.Buyer, role.Moder, role.Admin), h.AddPlanetToRequest)
-	router.DELETE("/PlanetsRequests", h.WithAuthCheck(role.Buyer, role.Moder, role.Admin), h.DeletePlanetRequest)
-	router.PUT("/PlanetsRequests", h.WithAuthCheck(role.Buyer, role.Moder, role.Admin), h.UpdatePlanetNumberInRequest)
-	router.GET("/ping", h.WithAuthCheck(role.Moder, role.Admin), h.Ping)
+	router.POST("/PlanetsRequests", h.WithIdCheck(role.Buyer, role.Moder), h.AddPlanetToRequest)
+	router.DELETE("/PlanetsRequests", h.WithAuthCheck(role.Buyer, role.Moder), h.DeletePlanetRequest)
+	router.PUT("/PlanetsRequests", h.WithAuthCheck(role.Buyer, role.Moder), h.UpdatePlanetNumberInRequest)
+	router.GET("/ping", h.WithAuthCheck(role.Moder), h.Ping)
 }
 
 //func registerStatic(router *gin.Engine) {
