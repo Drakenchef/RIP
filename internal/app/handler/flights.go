@@ -263,13 +263,38 @@ func (h *Handler) UserUpdateFlightStatusById(ctx *gin.Context) {
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
 // @Router /FlightsModer/{id} [put]
 func (h *Handler) ModerUpdateFlightStatusById(ctx *gin.Context) {
+	moderID, exists := ctx.Get("user_id")
+	if !exists {
+		// Обработка ситуации, когда userid отсутствует в контексте
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("moder_id not found in context"))
+		return
+	}
+	// Приведение типа, если необходимо
+	var moderIDUint uint
+	switch v := moderID.(type) {
+	case uint:
+		moderIDUint = v
+	case int:
+		moderIDUint = uint(v)
+	case string:
+		i, err := strconv.Atoi(v)
+		if err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, errors.New("failed to convert moder_id to uint"))
+			return
+		}
+		moderIDUint = uint(i)
+	default:
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("moder_id is not of a supported type"))
+		return
+	}
+
 	id := ctx.Param("id")
 	idint, err := strconv.Atoi(id)
 	if err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
 		return
 	}
-	result, err := h.Repository.ModerUpdateFlightStatusById(idint)
+	result, err := h.Repository.ModerUpdateFlightStatusById(idint, moderIDUint)
 	if err != nil {
 		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("can not refactor status"))
 		return

@@ -170,7 +170,7 @@ func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, erro
 
 	return &flight, nil
 }
-func (r *Repository) ModerUpdateFlightStatusById(id int) (*ds.FlightRequest, error) {
+func (r *Repository) ModerUpdateFlightStatusById(id int, moderId uint) (*ds.FlightRequest, error) {
 	var flight ds.FlightRequest
 	result := r.db.First(&flight, id)
 	if result.Error != nil {
@@ -180,11 +180,14 @@ func (r *Repository) ModerUpdateFlightStatusById(id int) (*ds.FlightRequest, err
 	// Меняем статус тут
 	if flight.Status == "отменён" {
 		flight.Status = "удалён"
+		flight.ModerID = moderId
 	} else if flight.Status == "в работе" {
 		flight.Status = "завершён"
 		flight.DateCompletion = time.Now()
+		flight.ModerID = moderId
 	} else if flight.Status != "удалён" && flight.Status != "отменён" {
 		flight.Status = "отменён"
+		flight.ModerID = moderId
 		flight.DateCompletion = time.Now()
 	}
 
