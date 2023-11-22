@@ -122,6 +122,5 @@ func (h *Handler) successAddHandler(ctx *gin.Context, key string, data interface
 // @Produce      json
 // @Router       /ping [get]
 func (h *Handler) Ping(gCtx *gin.Context) {
-	name := gCtx.Request.FormValue("name")
-	gCtx.String(http.StatusOK, "Hello, %s", name)
+	gCtx.String(http.StatusOK, "Hello, my friend!")
 }

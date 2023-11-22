@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/drakenchef/RIP/internal/app/ds"
+	"time"
 )
 
 func (r *Repository) PlanetsRequestsList() (*[]ds.PlanetsRequest, error) {
@@ -32,7 +33,7 @@ func (r *Repository) AddPlanetToRequest(pr *struct {
 	r.db.Where("user_id = ? AND status = ?", userid, "создан").First(&flightRequest)
 	r.db.Where("id = ?", userid).First(&user)
 	if flightRequest.ID == 0 {
-		newRequest := ds.FlightRequest{UserID: user.ID, UserLogin: user.Login, Status: "создан"}
+		newRequest := ds.FlightRequest{UserID: user.ID, UserLogin: user.Login, Status: "создан", DateCreate: time.Now()}
 		r.db.Create(&newRequest)
 		flightRequest = newRequest
 	}

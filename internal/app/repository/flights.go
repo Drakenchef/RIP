@@ -3,14 +3,15 @@ package repository
 import (
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"github.com/drakenchef/RIP/internal/app/utils"
+	"time"
 )
 
-func (r *Repository) FlightsList(userID, datestart, dateend, status string) (*[]ds.FlightRequest, error) {
+func (r *Repository) FlightsList(userlogin, datestart, dateend, status string) (*[]ds.FlightRequest, error) {
 	var flights []ds.FlightRequest
 	db := r.db.Preload("User").Where("status !=?", utils.DeletedString)
 
-	if userID != "" {
-		db = db.Where("user_id = ?", userID)
+	if userlogin != "" {
+		db = db.Where("user_login = ?", userlogin)
 	}
 
 	if datestart != "" && dateend != "" {
@@ -28,7 +29,7 @@ func (r *Repository) FlightsList(userID, datestart, dateend, status string) (*[]
 }
 func (r *Repository) UsersFlight(userid uint) (*[]ds.FlightRequest, error) {
 	var flight []ds.FlightRequest
-	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ? AND status = ?", userid, "создан").Find(&flight)
+	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ? AND status != ?", userid, "удалён").Find(&flight)
 	return &flight, result.Error
 }
 
@@ -159,8 +160,7 @@ func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, erro
 	// Меняем статус тут
 	if flight.Status == "создан" {
 		flight.Status = "в работе"
-	} else if flight.Status == "в работе" {
-		flight.Status = "завершён"
+		flight.DateFormation = time.Now()
 	}
 
 	// Сохраняем изменения в базе данных
@@ -180,10 +180,12 @@ func (r *Repository) ModerUpdateFlightStatusById(id int) (*ds.FlightRequest, err
 	// Меняем статус тут
 	if flight.Status == "отменён" {
 		flight.Status = "удалён"
-	} else if flight.Status == "удалён" {
+	} else if flight.Status == "в работе" {
 		flight.Status = "завершён"
+		flight.DateCompletion = time.Now()
 	} else if flight.Status != "удалён" && flight.Status != "отменён" {
 		flight.Status = "отменён"
+		flight.DateCompletion = time.Now()
 	}
 
 	// Сохраняем изменения в базе данных

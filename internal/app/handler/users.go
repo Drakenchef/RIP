@@ -152,7 +152,6 @@ func (h *Handler) Register(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Param Authorization header string true "Bearer {token}" default("Bearer ")
 // @Success 200 {string} string "Успешный выход"
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 401 {object} errorResp "Неверные учетные данные"

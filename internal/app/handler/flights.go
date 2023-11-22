@@ -17,18 +17,19 @@ import (
 // @Param status query string false "Статус заявки."
 // @Param date_formation_start query string false "Дата начала периода фильтрации в формате '2006-01-02'."
 // @Param date_formation_end query string false "Дата окончания периода фильтрации в формате '2006-01-02'."
+// @Param user_login query string false "Сортировка по login пользователя."
 // @Success 200 {array} ds.FlightsListRes "Список заявок"
 // @Success 200 {array} ds.FlightsListRes2 "Список заявок"
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 204 {object} errorResp "Нет данных"
 // @Router /Flights [get]
 func (h *Handler) FlightsList(ctx *gin.Context) {
-	userID := ctx.DefaultQuery("user_id", "")
+	userlogin := ctx.DefaultQuery("user_login", "")
 	datestart := ctx.DefaultQuery("date_formation_start", "")
 	dateend := ctx.DefaultQuery("date_formation_end", "")
 	status := ctx.DefaultQuery("status", "")
 
-	flights, err := h.Repository.FlightsList(userID, datestart, dateend, status)
+	flights, err := h.Repository.FlightsList(userlogin, datestart, dateend, status)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch flights"})

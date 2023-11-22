@@ -52,6 +52,12 @@ const docTemplate = `{
                         "description": "Дата окончания периода фильтрации в формате '2006-01-02'.",
                         "name": "date_formation_end",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Сортировка по login пользователя.",
+                        "name": "user_login",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -828,16 +834,6 @@ const docTemplate = `{
                     "Пользователи"
                 ],
                 "summary": "Выход пользователя",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "\"Bearer \"",
-                        "description": "Bearer {token}",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Успешный выход",

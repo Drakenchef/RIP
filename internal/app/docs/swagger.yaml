@@ -298,6 +298,10 @@ paths:
         in: query
         name: date_formation_end
         type: string
+      - description: Сортировка по login пользователя.
+        in: query
+        name: user_login
+        type: string
       produces:
       - application/json
       responses:
@@ -764,13 +768,6 @@ paths:
       consumes:
       - application/json
       description: Завершение сеанса текущего пользователя.
-      parameters:
-      - default: '"Bearer "'
-        description: Bearer {token}
-        in: header
-        name: Authorization
-        required: true
-        type: string
       produces:
       - application/json
       responses:
