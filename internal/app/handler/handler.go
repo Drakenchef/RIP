@@ -58,7 +58,7 @@ func (h *Handler) FlightCRUD(router *gin.Engine) {
 	router.GET("/Flights", h.WithAuthCheck(role.Moder), h.FlightsList)
 	router.GET("/Flights/:id", h.WithAuthCheck(role.Moder), h.FlightById)
 	router.DELETE("/Flights", h.WithAuthCheck(role.Moder), h.DeleteFlight)
-	router.PUT("/Flights", h.WithIdCheck(role.Moder), h.UpdateFlight)
+	router.PUT("/Flights", h.WithIdCheck(role.Buyer, role.Moder), h.UpdateFlight)
 	router.PUT("/FlightsUser/:id", h.WithAuthCheck(role.Buyer, role.Moder), h.UserUpdateFlightStatusById)
 	router.PUT("/FlightsModer/:id", h.WithIdCheck(role.Moder), h.ModerUpdateFlightStatusById)
 	router.GET("/UsersFlight", h.WithIdCheck(role.Buyer, role.Moder), h.UsersFlight)

@@ -336,12 +336,6 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Получаем определённую планету ",
-                        "name": "planet",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Фильтрация поиска",
                         "name": "search",
                         "in": "query"
                     }
@@ -1166,9 +1160,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "ams": {
-                    "type": "string"
-                },
-                "description": {
                     "type": "string"
                 },
                 "id": {

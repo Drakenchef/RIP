@@ -168,8 +168,6 @@ definitions:
     properties:
       ams:
         type: string
-      description:
-        type: string
       id:
         type: integer
     type: object
@@ -480,10 +478,6 @@ paths:
       description: Получение планет и фильтрация при поиске
       parameters:
       - description: 'Получаем определённую планету '
-        in: query
-        name: planet
-        type: string
-      - description: Фильтрация поиска
         in: query
         name: search
         type: string

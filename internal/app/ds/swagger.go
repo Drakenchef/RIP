@@ -60,9 +60,8 @@ type DeleteFlightReq struct {
 }
 
 type UpdateFlightReq struct {
-	ID          uint   `json:"id"`
-	AMS         string `json:"ams"`
-	Description string `json:"description"`
+	ID  uint   `json:"id"`
+	AMS string `json:"ams"`
 }
 
 type UpdateStatusForModeratorReq struct {

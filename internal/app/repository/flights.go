@@ -161,6 +161,9 @@ func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, erro
 	if flight.Status == "создан" {
 		flight.Status = "в работе"
 		flight.DateFormation = time.Now()
+	} else if flight.Status == "в работе" {
+		flight.Status = "отменён"
+		flight.DateCompletion = time.Now()
 	}
 
 	// Сохраняем изменения в базе данных
@@ -178,7 +181,7 @@ func (r *Repository) ModerUpdateFlightStatusById(id int, moderId uint) (*ds.Flig
 	}
 
 	// Меняем статус тут
-	if flight.Status == "отменён" {
+	if flight.Status == "отменён" || flight.Status == "завершён" {
 		flight.Status = "удалён"
 		flight.ModerID = moderId
 	} else if flight.Status == "в работе" {

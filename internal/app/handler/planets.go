@@ -17,8 +17,7 @@ import (
 // @Description Получение планет и фильтрация при поиске
 // @Tags Планеты
 // @Produce json
-// @Param planet query string false "Получаем определённую планету "
-// @Param search query string false "Фильтрация поиска"
+// @Param search query string false "Получаем определённую планету "
 // @Success 200 {object} ds.PlanetsListResp
 // @Failure 400 {object} errorResp "Неверный запрос"
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
