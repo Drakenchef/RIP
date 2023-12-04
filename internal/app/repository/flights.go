@@ -141,6 +141,8 @@ func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, erro
 	if flight.Status == "создан" {
 		flight.Status = "в работе"
 	} else if flight.Status == "в работе" {
+		flight.Status = "завершён"
+	} else if flight.Status == "завершён" {
 		flight.Status = "отменён"
 	}
 
