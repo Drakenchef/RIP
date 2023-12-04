@@ -23,3 +23,13 @@ func (r *Repository) GetUserByLogin(login string) (*ds.Users, error) {
 
 	return user, nil
 }
+
+func (r *Repository) GetUserById(id uint) *ds.Users {
+	user := &ds.Users{}
+
+	if err := r.db.Where("id = ?", id).First(user).Error; err != nil {
+		return nil
+	}
+
+	return user
+}

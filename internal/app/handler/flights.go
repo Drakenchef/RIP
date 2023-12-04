@@ -24,19 +24,56 @@ import (
 // @Failure 204 {object} errorResp "Нет данных"
 // @Router /Flights [get]
 func (h *Handler) FlightsList(ctx *gin.Context) {
-	userlogin := ctx.DefaultQuery("user_login", "")
-	datestart := ctx.DefaultQuery("date_formation_start", "")
-	dateend := ctx.DefaultQuery("date_formation_end", "")
-	status := ctx.DefaultQuery("status", "")
-
-	flights, err := h.Repository.FlightsList(userlogin, datestart, dateend, status)
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch flights"})
+	// Получение значения userid из контекста
+	userID, exists := ctx.Get("user_id")
+	if !exists {
+		// Обработка ситуации, когда userid отсутствует в контексте
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("user_id not found in context"))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, flights)
+	// Приведение типа, если необходимо
+	var userIDUint uint
+	switch v := userID.(type) {
+	case uint:
+		userIDUint = v
+	case int:
+		userIDUint = uint(v)
+	case string:
+		i, err := strconv.Atoi(v)
+		if err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, errors.New("failed to convert user_id to uint"))
+			return
+		}
+		userIDUint = uint(i)
+	default:
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("user_id is not of a supported type"))
+		return
+	}
+	var thisUser *ds.Users
+	thisUser = h.Repository.GetUserById(userIDUint)
+	if thisUser.Role == 0 {
+		flight, err := h.Repository.UsersFlight(userIDUint)
+		if err != nil {
+			h.errorHandler(ctx, http.StatusNoContent, err)
+			return
+		}
+		h.successHandler(ctx, "Flight", flight)
+	} else {
+		userlogin := ctx.DefaultQuery("user_login", "")
+		datestart := ctx.DefaultQuery("date_formation_start", "")
+		dateend := ctx.DefaultQuery("date_formation_end", "")
+		status := ctx.DefaultQuery("status", "")
+
+		flights, err := h.Repository.FlightsList(userlogin, datestart, dateend, status)
+
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch flights"})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, flights)
+	}
 }
 
 // UsersFlight godoc
