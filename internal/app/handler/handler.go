@@ -27,7 +27,7 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 	router.GET("/Planet/:id", h.PlanetById)
 	router.POST("/Planets", h.AddPlanet)
 	router.PUT("/Planets/:id", h.UpdatePlanet)
-	router.DELETE("/Planets", h.DeletePlanet)
+	router.DELETE("/Planets/:id", h.DeletePlanet)
 	//router.POST("/PlanetImage", h.AddImage)
 
 	router.GET("/Flights", h.FlightsList)

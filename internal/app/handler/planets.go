@@ -161,23 +161,25 @@ func (h *Handler) PlanetById(ctx *gin.Context) {
 }
 
 func (h *Handler) DeletePlanet(ctx *gin.Context) {
-	var request struct {
-		ID uint `json:"id"`
-	}
-	if err := ctx.BindJSON(&request); err != nil {
-		h.errorHandler(ctx, http.StatusBadRequest, err)
-		return
-	}
-	if request.ID == 0 {
+	//var request struct {
+	//	ID uint `json:"id"`
+	//}
+	//if err := ctx.BindJSON(&request); err != nil {
+	//	h.errorHandler(ctx, http.StatusBadRequest, err)
+	//	return
+	//}
+	id := ctx.Param("id")
+	idint, _ := strconv.Atoi(id)
+	if idint == 0 {
 		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
 		return
 	}
-	if err := h.Repository.DeletePlanet(request.ID); err != nil {
+	if err := h.Repository.DeletePlanet(uint(idint)); err != nil {
 		h.errorHandler(ctx, http.StatusInternalServerError, err)
 		return
 	}
 
-	h.successHandler(ctx, "Planet_id", request.ID)
+	h.successHandler(ctx, "Planet_id", idint)
 }
 
 func (h *Handler) AddPlanet(ctx *gin.Context) {
