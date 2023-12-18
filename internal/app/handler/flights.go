@@ -363,3 +363,34 @@ func (h *Handler) FlightById(ctx *gin.Context) {
 	h.successHandler(ctx, "Flight", flight)
 
 }
+
+func (h *Handler) UpdateFlightAsyncResult(ctx *gin.Context) {
+	var req struct {
+		Result     string `json:"result"`
+		AccessHash string `json:"access_hash"`
+	}
+
+	id := ctx.Param("id")
+	idint, err := strconv.Atoi(id)
+	if err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
+		return
+	}
+	if err := ctx.BindJSON(&req); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
+		return
+	}
+	if req.AccessHash == "123" {
+		if err := h.Repository.UpdateFlightAsyncResult(idint, req.Result); err != nil {
+			h.errorHandler(ctx, http.StatusInternalServerError, err)
+			return
+		}
+		h.successHandler(ctx, "result_updated", gin.H{
+			"satellite_id": idint,
+			"Result":       req.Result,
+		})
+	} else {
+		h.errorHandler(ctx, http.StatusForbidden, errors.New(req.AccessHash))
+		return
+	}
+}

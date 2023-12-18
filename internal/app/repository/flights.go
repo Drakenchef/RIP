@@ -211,3 +211,17 @@ func (r *Repository) FlightById(id string) (*ds.FlightRequest, error) {
 	result := r.db.Preload("PlanetsRequest.Planet").Where("id", id).Find(&flight)
 	return &flight, result.Error
 }
+
+func (r *Repository) UpdateFlightAsyncResult(flightID int, Result string) error {
+	existingFlight := ds.FlightRequest{}
+	iduint := uint(flightID)
+	if result := r.db.First(&existingFlight, iduint); result.Error != nil {
+		return result.Error
+	}
+
+	existingFlight.Result = Result
+
+	// Сохранение изменений в базу данных
+	result := r.db.Save(&existingFlight)
+	return result.Error
+}

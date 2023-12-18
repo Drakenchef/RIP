@@ -13,7 +13,9 @@ type FlightRequest struct {
 	AMS            string           `gorm:"type:varchar(255)" json:"ams"`
 	UserID         uint             `json:"user_id"`
 	ModerID        uint             `json:"moder_id"`
+	ModerLogin     string           `json:"moder_login"`
 	UserLogin      string           `json:"user_login"`
 	User           Users            `gorm:"foreignKey:UserID" json:"-"`
 	PlanetsRequest []PlanetsRequest `json:"planets_request" gorm:"foreignkey:FRID"`
+	Result         string           `gorm:"type:varchar(255)" json:"result;default:'не запущен'"`
 }

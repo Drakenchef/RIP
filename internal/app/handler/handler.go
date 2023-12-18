@@ -61,8 +61,9 @@ func (h *Handler) FlightCRUD(router *gin.Engine) {
 	router.PUT("/Flights", h.WithIdCheck(role.Buyer, role.Moder), h.UpdateFlight)
 	router.PUT("/FlightsUser/:id", h.WithAuthCheck(role.Buyer, role.Moder), h.UserUpdateFlightStatusById)
 	router.PUT("/FlightsModer/:id", h.WithIdCheck(role.Moder), h.ModerUpdateFlightStatusById)
-	router.GET("/UsersFlight", h.WithIdCheck(role.Buyer, role.Moder), h.UsersFlight)
+	//router.GET("/UsersFlight", h.WithIdCheck(role.Buyer, role.Moder), h.UsersFlight)
 	router.PUT("/UsersFlightUpdate", h.WithIdCheck(role.Buyer, role.Moder), h.UsersUpdateFlight)
+	router.PUT("/UpdateFlightAsyncResult/:id", h.UpdateFlightAsyncResult)
 }
 func (h *Handler) PlanetsRequestsCRUD(router *gin.Engine) {
 	router.POST("/PlanetsRequests", h.WithIdCheck(role.Buyer, role.Moder), h.AddPlanetToRequest)
