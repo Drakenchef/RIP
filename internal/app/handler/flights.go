@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // FlightsList godoc
@@ -73,7 +74,36 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 			return
 		}
 
-		ctx.JSON(http.StatusOK, flights)
+		type FlightResponse struct {
+			ID             uint      `json:"id"`
+			DateCreate     time.Time `json:"date_create"`
+			DateFormation  time.Time `json:"date_formation"`
+			DateCompletion time.Time `json:"date_completion"`
+			Status         string    `json:"status"`
+			Ams            string    `json:"ams,omitempty"`
+			ModerLogin     string    `json:"moder_login"`
+			UserLogin      string    `json:"user_login"`
+			PlanetsRequest string    `json:"planets_request,omitempty"`
+			Result         string    `json:"Result"`
+		}
+
+		flightResponses := []FlightResponse{}
+		for _, flight := range *flights {
+			flightResponse := FlightResponse{
+				ID:             flight.ID,
+				DateCreate:     flight.DateCreate,
+				DateFormation:  flight.DateFormation,
+				DateCompletion: flight.DateCompletion,
+				Status:         flight.Status,
+				ModerLogin:     flight.ModerLogin,
+				UserLogin:      flight.UserLogin,
+				Result:         flight.Result,
+			}
+			flightResponses = append(flightResponses, flightResponse)
+		}
+
+		// Отправка измененного JSON-ответа без user_id и moder_id
+		ctx.JSON(http.StatusOK, flightResponses)
 
 	}
 }
