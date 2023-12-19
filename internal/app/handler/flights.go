@@ -59,6 +59,7 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 			return
 		}
 		h.successHandler(ctx, "Flight", flight)
+
 	} else {
 		userlogin := ctx.DefaultQuery("user_login", "")
 		datestart := ctx.DefaultQuery("date_formation_start", "")
@@ -73,6 +74,7 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 		}
 
 		ctx.JSON(http.StatusOK, flights)
+
 	}
 }
 
@@ -380,7 +382,7 @@ func (h *Handler) UpdateFlightAsyncResult(ctx *gin.Context) {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
 	}
-	if req.AccessHash == "123" {
+	if req.AccessHash == "ASLDKjalksdjalskjdlk12lk3jfjkfdsfdasdASIODU*As" {
 		if err := h.Repository.UpdateFlightAsyncResult(idint, req.Result); err != nil {
 			h.errorHandler(ctx, http.StatusInternalServerError, err)
 			return
