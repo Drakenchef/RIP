@@ -83,7 +83,6 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 			Ams            string    `json:"ams,omitempty"`
 			ModerLogin     string    `json:"moder_login"`
 			UserLogin      string    `json:"user_login"`
-			PlanetsRequest string    `json:"planets_request,omitempty"`
 			Result         string    `json:"Result"`
 		}
 
