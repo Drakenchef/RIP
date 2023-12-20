@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"bytes"
 	"errors"
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"github.com/gin-gonic/gin"
+	"github.com/goccy/go-json"
 	"net/http"
 	"strconv"
 	"time"
@@ -301,6 +303,7 @@ func (h *Handler) UsersUpdateFlight(ctx *gin.Context) {
 // @Router /FlightsUser/{id} [put]
 func (h *Handler) UserUpdateFlightStatusById(ctx *gin.Context) {
 	id := ctx.Param("id")
+
 	idint, err := strconv.Atoi(id)
 	if err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
@@ -316,6 +319,34 @@ func (h *Handler) UserUpdateFlightStatusById(ctx *gin.Context) {
 		"id":     result.ID,
 		"status": result.Status,
 	})
+	// Создаем структуру для запроса
+	requestBody, err := json.Marshal(map[string]string{
+		"flight_id": id,
+	})
+	if err != nil {
+		// Обработка ошибки маршалинга JSON
+		ctx.String(http.StatusInternalServerError, "Error creating request body: %v", err)
+		return
+	}
+
+	// Отправляем запрос на внешний сервис
+	resp, err := http.Post("http://127.0.0.1:8000/start-async-update/", "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		// Обработка ошибки выполнения запроса
+		ctx.String(http.StatusInternalServerError, "Error sending request to the external service: %v", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Проверяем статус ответа
+	if resp.StatusCode != http.StatusOK {
+		// Обработка случая, когда внешний сервис вернул ошибку
+		ctx.String(resp.StatusCode, "External service returned: %s", resp.Status)
+		return
+	}
+
+	// Все хорошо, возвращаем HTTP статус 200 OK
+	ctx.Status(http.StatusOK)
 }
 
 // ModerUpdateFlightStatusById godoc
