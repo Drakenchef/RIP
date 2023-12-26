@@ -104,7 +104,8 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 		}
 
 		// Отправка измененного JSON-ответа без user_id и moder_id
-		ctx.JSON(http.StatusOK, flightResponses)
+		//ctx.JSON(http.StatusOK, flightResponses)
+		h.successHandler(ctx, "Flights", flightResponses)
 
 	}
 }

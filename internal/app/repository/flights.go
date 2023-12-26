@@ -29,7 +29,7 @@ func (r *Repository) FlightsList(userlogin, datestart, dateend, status string) (
 }
 func (r *Repository) UsersFlight(userid uint) (*[]ds.FlightRequest, error) {
 	var flight []ds.FlightRequest
-	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ? AND status != ?", userid, "удалён").Find(&flight)
+	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").Where("user_id = ? AND status != ?", userid, "создан").Find(&flight)
 	return &flight, result.Error
 }
 
@@ -175,6 +175,9 @@ func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, erro
 }
 func (r *Repository) ModerUpdateFlightStatusById(id int, moderId uint) (*ds.FlightRequest, error) {
 	var flight ds.FlightRequest
+	var user ds.Users
+	r.db.Where("id = ?", moderId).First(&user)
+
 	result := r.db.First(&flight, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -184,13 +187,16 @@ func (r *Repository) ModerUpdateFlightStatusById(id int, moderId uint) (*ds.Flig
 	if flight.Status == "отменён" || flight.Status == "завершён" {
 		flight.Status = "удалён"
 		flight.ModerID = moderId
+		flight.ModerLogin = user.UserName
 	} else if flight.Status == "в работе" {
 		flight.Status = "завершён"
 		flight.DateCompletion = time.Now()
 		flight.ModerID = moderId
+		flight.ModerLogin = user.UserName
 	} else if flight.Status != "удалён" && flight.Status != "отменён" {
 		flight.Status = "отменён"
 		flight.ModerID = moderId
+		flight.ModerLogin = user.UserName
 		flight.DateCompletion = time.Now()
 	}
 

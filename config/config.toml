@@ -1,5 +1,5 @@
 ServiceHost = "localhost"
-ServicePort = 8888
+ServicePort = 8880
 
 # НАСТРОЙКИ РЕДИСКИ
 [Redis]
