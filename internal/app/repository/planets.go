@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"strings"
 )
@@ -91,9 +92,10 @@ func (r *Repository) UpdatePlanetImage(id string, newImageURL string) error {
 
 func (r *Repository) GetUserRequestID(userID int) (int, error) {
 	var userRequestID int
-	err := r.db.Table("flight_requests").Select("user_id").Where("user_id = ? AND status = ?", userID, "создан").Scan(&userRequestID).Error
+	err := r.db.Table("flight_requests").Select("id").Where("user_id = ? AND status = ?", userID, "создан").Scan(&userRequestID).Error
 	if err != nil {
 		return 0, err
 	}
+	fmt.Println(userRequestID)
 	return userRequestID, nil
 }

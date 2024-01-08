@@ -61,7 +61,37 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 			h.errorHandler(ctx, http.StatusNoContent, err)
 			return
 		}
-		h.successHandler(ctx, "Flight", flight)
+		type FlightResponse struct {
+			ID             uint      `json:"id"`
+			DateCreate     time.Time `json:"date_create"`
+			DateFormation  time.Time `json:"date_formation"`
+			DateCompletion time.Time `json:"date_completion"`
+			Status         string    `json:"status"`
+			Ams            string    `json:"ams"`
+			ModerLogin     string    `json:"moder_login"`
+			UserLogin      string    `json:"user_login"`
+			Result         string    `json:"result"`
+		}
+
+		flightResponses := []FlightResponse{}
+		for _, dflight := range *flight {
+			flightResponse := FlightResponse{
+				ID:             dflight.ID,
+				DateCreate:     dflight.DateCreate,
+				DateFormation:  dflight.DateFormation,
+				DateCompletion: dflight.DateCompletion,
+				Status:         dflight.Status,
+				ModerLogin:     dflight.ModerLogin,
+				UserLogin:      dflight.UserLogin,
+				Result:         dflight.Result,
+				Ams:            dflight.AMS,
+			}
+			flightResponses = append(flightResponses, flightResponse)
+		}
+
+		// Отправка измененного JSON-ответа без user_id и moder_id
+		//ctx.JSON(http.StatusOK, flightResponses)
+		h.successHandler(ctx, "Flights", flightResponses)
 
 	} else {
 		userlogin := ctx.DefaultQuery("user_login", "")
@@ -82,10 +112,10 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 			DateFormation  time.Time `json:"date_formation"`
 			DateCompletion time.Time `json:"date_completion"`
 			Status         string    `json:"status"`
-			Ams            string    `json:"ams,omitempty"`
+			Ams            string    `json:"ams"`
 			ModerLogin     string    `json:"moder_login"`
 			UserLogin      string    `json:"user_login"`
-			Result         string    `json:"Result"`
+			Result         string    `json:"result"`
 		}
 
 		flightResponses := []FlightResponse{}
@@ -96,6 +126,7 @@ func (h *Handler) FlightsList(ctx *gin.Context) {
 				DateFormation:  flight.DateFormation,
 				DateCompletion: flight.DateCompletion,
 				Status:         flight.Status,
+				Ams:            flight.AMS,
 				ModerLogin:     flight.ModerLogin,
 				UserLogin:      flight.UserLogin,
 				Result:         flight.Result,
@@ -305,21 +336,6 @@ func (h *Handler) UsersUpdateFlight(ctx *gin.Context) {
 func (h *Handler) UserUpdateFlightStatusById(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	idint, err := strconv.Atoi(id)
-	if err != nil {
-		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
-		return
-	}
-	result, err := h.Repository.UserUpdateFlightStatusById(idint)
-	if err != nil {
-		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("can not refactor status"))
-		return
-	}
-
-	h.successHandler(ctx, "updated_status_by_user", gin.H{
-		"id":     result.ID,
-		"status": result.Status,
-	})
 	// Создаем структуру для запроса
 	requestBody, err := json.Marshal(map[string]string{
 		"flight_id": id,
@@ -330,24 +346,38 @@ func (h *Handler) UserUpdateFlightStatusById(ctx *gin.Context) {
 		return
 	}
 
+	idint, _ := strconv.Atoi(id)
+	status := h.Repository.GetFlightStatusById(idint)
 	// Отправляем запрос на внешний сервис
-	resp, err := http.Post("http://127.0.0.1:8000/start-async-update/", "application/json", bytes.NewBuffer(requestBody))
-	if err != nil {
-		// Обработка ошибки выполнения запроса
-		ctx.String(http.StatusInternalServerError, "Error sending request to the external service: %v", err)
-		return
-	}
-	defer resp.Body.Close()
 
-	// Проверяем статус ответа
-	if resp.StatusCode != http.StatusOK {
-		// Обработка случая, когда внешний сервис вернул ошибку
-		ctx.String(resp.StatusCode, "External service returned: %s", resp.Status)
-		return
-	}
+	if status == "создан" {
+		resp, err := http.Post("http://localhost:8000/start-async-update/", "application/json", bytes.NewBuffer(requestBody))
+		if err != nil {
+			// Обработка ошибки выполнения запроса
+			ctx.String(http.StatusInternalServerError, "Error sending request to the external service: %v", err)
+		}
+		defer resp.Body.Close()
 
-	// Все хорошо, возвращаем HTTP статус 200 OK
+		// Проверяем статус ответа
+		if resp.StatusCode != http.StatusOK {
+			// Обработка случая, когда внешний сервис вернул ошибку
+			ctx.String(resp.StatusCode, "External service returned: %s", resp.Status)
+		}
+
+		// Все хорошо, возвращаем HTTP статус 200 OK
+	}
 	ctx.Status(http.StatusOK)
+
+	result, err := h.Repository.UserUpdateFlightStatusById(idint)
+	if err != nil {
+		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("can not refactor status"))
+		return
+	}
+
+	h.successHandler(ctx, "updated_status_by_user", gin.H{
+		"id":     result.ID,
+		"status": result.Status,
+	})
 }
 
 // ModerUpdateFlightStatusById godoc
@@ -363,30 +393,16 @@ func (h *Handler) UserUpdateFlightStatusById(ctx *gin.Context) {
 // @Failure 500 {object} errorResp "Внутренняя ошибка сервера"
 // @Router /FlightsModer/{id} [put]
 func (h *Handler) ModerUpdateFlightStatusById(ctx *gin.Context) {
-	moderID, exists := ctx.Get("user_id")
-	if !exists {
-		// Обработка ситуации, когда userid отсутствует в контексте
-		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("moder_id not found in context"))
+	var requestData struct {
+		Status    string `json:"status"`
+		Modername string `json:"modername"`
+	}
+	if err := ctx.ShouldBindJSON(&requestData); err != nil {
+		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
 	}
-	// Приведение типа, если необходимо
-	var moderIDUint uint
-	switch v := moderID.(type) {
-	case uint:
-		moderIDUint = v
-	case int:
-		moderIDUint = uint(v)
-	case string:
-		i, err := strconv.Atoi(v)
-		if err != nil {
-			h.errorHandler(ctx, http.StatusInternalServerError, errors.New("failed to convert moder_id to uint"))
-			return
-		}
-		moderIDUint = uint(i)
-	default:
-		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("moder_id is not of a supported type"))
-		return
-	}
+	status := requestData.Status
+	modername := requestData.Modername
 
 	id := ctx.Param("id")
 	idint, err := strconv.Atoi(id)
@@ -394,7 +410,7 @@ func (h *Handler) ModerUpdateFlightStatusById(ctx *gin.Context) {
 		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
 		return
 	}
-	result, err := h.Repository.ModerUpdateFlightStatusById(idint, moderIDUint)
+	result, err := h.Repository.ModerUpdateFlightStatusById(idint, modername, status)
 	if err != nil {
 		h.errorHandler(ctx, http.StatusInternalServerError, errors.New("can not refactor status"))
 		return
@@ -423,7 +439,20 @@ func (h *Handler) FlightById(ctx *gin.Context) {
 		h.errorHandler(ctx, http.StatusNoContent, err)
 		return
 	}
-	h.successHandler(ctx, "Flight", flight)
+	h.successHandler(ctx, "Flight", gin.H{
+		"id":              flight.ID,
+		"ams":             flight.AMS,
+		"date_create":     flight.DateCreate,
+		"date_formation":  flight.DateFormation,
+		"date_completion": flight.DateCompletion,
+		"user_id":         flight.UserID,
+		"moder_id":        flight.ModerID,
+		"status":          flight.Status,
+		"planets_request": flight.PlanetsRequest,
+		"user_login":      flight.UserLogin,
+		"moder_login":     flight.ModerLogin,
+		"result":          flight.Result,
+	})
 
 }
 

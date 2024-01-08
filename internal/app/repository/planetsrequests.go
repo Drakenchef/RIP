@@ -26,19 +26,24 @@ func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *ds.Planet
 }
 
 func (r *Repository) AddPlanetToRequest(pr *struct {
-	PlanetId uint `json:"planet_id"`
+	PlanetId uint `json:"Planet_id"`
 }, userid uint) error {
-	var flightRequest ds.FlightRequest
+	var FlightRequest ds.FlightRequest
 	var user ds.Users
-	r.db.Where("user_id = ? AND status = ?", userid, "создан").First(&flightRequest)
+	r.db.Where("user_id = ? AND status = ?", userid, "создан").First(&FlightRequest)
 	r.db.Where("id = ?", userid).First(&user)
-	if flightRequest.ID == 0 {
-		newRequest := ds.FlightRequest{UserID: user.ID, UserLogin: user.Login, Status: "создан", DateCreate: time.Now(), Result: "нет результатов"}
+	if FlightRequest.ID == 0 {
+		newRequest := ds.FlightRequest{UserID: user.ID, UserLogin: user.Login, Status: "создан", DateCreate: time.Now(), Result: "Отсутствует"}
 		r.db.Create(&newRequest)
-		flightRequest = newRequest
+		query := "INSERT INTO planets_requests (fr_id, planet_id) VALUES ($1,$2) ON CONFLICT DO NOTHING;"
+		err := r.db.Exec(query, newRequest.ID, pr.PlanetId)
+		if err != nil {
+			return err.Error
+		}
+		return nil
 	}
 	query := "INSERT INTO planets_requests (fr_id, planet_id) VALUES ($1,$2) ON CONFLICT DO NOTHING;"
-	err := r.db.Exec(query, flightRequest.ID, pr.PlanetId)
+	err := r.db.Exec(query, FlightRequest.ID, pr.PlanetId)
 	if err != nil {
 		return err.Error
 	}

@@ -92,7 +92,7 @@ func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 	}
 	//var planetRequest ds.PlanetsRequest
 	var request struct {
-		PlanetId uint `json:"planet_id"`
+		PlanetId uint `json:"Planet_id"`
 	}
 	if err := ctx.BindJSON(&request); err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, err)

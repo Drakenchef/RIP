@@ -151,70 +151,56 @@ func (r *Repository) UpdateFlightStatus(updatedFlight *ds.FlightRequest) error {
 }
 
 func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, error) {
-	var flight ds.FlightRequest
-	result := r.db.First(&flight, id)
+	var Flight ds.FlightRequest
+	result := r.db.First(&Flight, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
 	// Меняем статус тут
-	if flight.Status == "создан" {
-		flight.Status = "в работе"
-		flight.DateFormation = time.Now()
-	} else if flight.Status == "в работе" {
-		flight.Status = "отменён"
-		flight.DateCompletion = time.Now()
+	if Flight.Status == "создан" {
+		Flight.Status = "в работе"
+		Flight.DateFormation = time.Now()
+	} else if Flight.Status == "в работе" {
+		Flight.Status = "отменен"
 	}
 
 	// Сохраняем изменения в базе данных
-	if err := r.db.Save(&flight).Error; err != nil {
+	if err := r.db.Save(&Flight).Error; err != nil {
 		return nil, err
 	}
 
-	return &flight, nil
+	return &Flight, nil
 }
-func (r *Repository) ModerUpdateFlightStatusById(id int, moderId uint) (*ds.FlightRequest, error) {
-	var flight ds.FlightRequest
+func (r *Repository) ModerUpdateFlightStatusById(id int, modername string, status string) (*ds.FlightRequest, error) {
+	var Flight ds.FlightRequest
 	var user ds.Users
-	r.db.Where("id = ?", moderId).First(&user)
+	r.db.Where("user_name = ?", modername).First(&user)
 
-	result := r.db.First(&flight, id)
+	result := r.db.First(&Flight, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
 	// Меняем статус тут
-	if flight.Status == "отменён" || flight.Status == "завершён" {
-		flight.Status = "удалён"
-		flight.ModerID = moderId
-		flight.ModerLogin = user.UserName
-	} else if flight.Status == "в работе" {
-		flight.Status = "завершён"
-		flight.DateCompletion = time.Now()
-		flight.ModerID = moderId
-		flight.ModerLogin = user.UserName
-	} else if flight.Status != "удалён" && flight.Status != "отменён" {
-		flight.Status = "отменён"
-		flight.ModerID = moderId
-		flight.ModerLogin = user.UserName
-		flight.DateCompletion = time.Now()
-	}
+	Flight.Status = status
+	Flight.ModerID = user.ID
+	Flight.ModerLogin = modername
 
 	// Сохраняем изменения в базе данных
-	if err := r.db.Save(&flight).Error; err != nil {
+	if err := r.db.Save(&Flight).Error; err != nil {
 		return nil, err
 	}
 
-	return &flight, nil
+	return &Flight, nil
 }
-
 func (r *Repository) FlightById(id string) (*ds.FlightRequest, error) {
 	//var flight ds.FlightRequest
 	//intId, _ := strconv.Atoi(id)
 	//r.db.Find(&flight, intId)
 	//return &flight, nil
-	var flight ds.FlightRequest
-	result := r.db.Preload("PlanetsRequest.Planet").Where("id", id).Find(&flight)
+	flight := ds.FlightRequest{}
+	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").First(&flight, id)
 	return &flight, result.Error
 }
 
@@ -230,4 +216,14 @@ func (r *Repository) UpdateFlightAsyncResult(flightID int, Result string) error 
 	// Сохранение изменений в базу данных
 	result := r.db.Save(&existingFlight)
 	return result.Error
+}
+func (r *Repository) GetFlightStatusById(id int) string {
+	var Flight ds.FlightRequest
+
+	r.db.First(&Flight, id)
+	/*if result.Error != nil {
+		return nil
+	}*/
+
+	return Flight.Status
 }
