@@ -13,17 +13,13 @@ func (r *Repository) PlanetsList() (*[]ds.Planet, error) {
 }
 
 func (r *Repository) SearchPlanet(search string) (*[]ds.Planet, error) {
-	var planets []ds.Planet
-	r.db.Find(&planets)
-
-	var filteredPlanets []ds.Planet
-	for _, planet := range planets {
-		if strings.Contains(strings.ToLower(planet.Name), strings.ToLower(search)) {
-			filteredPlanets = append(filteredPlanets, planet)
-		}
+	var filteredPlanet []ds.Planet
+	search = "%" + strings.ToLower(search) + "%"
+	if err := r.db.Where("LOWER(description) LIKE ?", search).Find(&filteredPlanet).Error; err != nil {
+		return nil, err
 	}
 
-	return &filteredPlanets, nil
+	return &filteredPlanet, nil
 }
 
 func (r *Repository) PlanetById(id string) (*ds.Planet, error) {
