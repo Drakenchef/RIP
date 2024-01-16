@@ -25,6 +25,7 @@ type RegisterReq struct {
 	UserName string `json:"user_name"`
 }
 
+// forcommit
 type RegisterResp struct {
 	Ok bool `json:"ok"`
 }

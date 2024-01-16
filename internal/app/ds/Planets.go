@@ -12,3 +12,5 @@ type Planet struct {
 	Type        string  `gorm:"not null" json:"type"`
 	IsDelete    bool    `json:"is_delete"`
 }
+
+//forcommitasdasdasdasdasdasdadas

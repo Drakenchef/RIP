@@ -5,8 +5,8 @@
 -- INSERT INTO users (login,user_name, password, role) VALUES ('user4','Emily', 'moder','2');
 --
 INSERT INTO planets (name, description,radius, distance, gravity, image, type,is_delete) VALUES ('Сатурн', 'Сатурн - шестая планета Солнечной системы, наиболее известная благодаря своим кольцам из льда и камней, которые делают ее уникальной среди других планет. Сатурн также является газовым гигантом с многочисленными спутниками, включая крупнейший - Титан. Несмотря на то, что Сатурн находится на значительном расстоянии от Земли, его потрясающая красота и тайны привлекают учёных и астрономов.', 3389.5, 1200000000, 107, 'http://127.0.0.1:9000/amsflights/saturn.jpg','Планета',false);
-INSERT INTO planets (name, description,radius, distance, gravity, image, type,is_delete) VALUES ('Марс', 'Марс - четвёртая планета от Солнца и ближайшая к Земле внешняя планета. Он известен своим красноватым оттенком, который обусловлен наличием оксида железа на его поверхности. Марс также имеет атмосферу и полярные капюшоны, а исследование этой планеты помогает ученым лучше понять процессы, протекающие на Земле.', 3389.5, 55000000, 37, 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Mars_Valles_Marineris_EDIT.jpg/274px-Mars_Valles_Marineris_EDIT.jpg','Планета',false);
-INSERT INTO planets (name, description,radius, distance, gravity, image, type,is_delete) VALUES ('Луна', 'Луна - естественный спутник Земли, являющийся единственным небесным телом, на котором человек уже побывал. Она имеет покрытую кратерами поверхность и орбитирует вокруг Земли, повышая красоту ночного неба.', 1737.1, 384400, 16.6, 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Moon_nearside_LRO_color_mosaic.png/300px-Moon_nearside_LRO_color_mosaic.png','Спутник',false);
+INSERT INTO planets (name, description,radius, distance, gravity, image, type,is_delete) VALUES ('Марс', 'Марс - четвёртая планета от Солнца и ближайшая к Земле внешняя планета. Он известен своим красноватым оттенком, который обусловлен наличием оксида железа на его поверхности. Марс также имеет атмосферу и полярные капюшоны, а исследование этой планеты помогает ученым лучше понять процессы, протекающие на Земле.', 3389.5, 55000000, 37, 'http://127.0.0.1:9000/amsflights/mars.jpg','Планета',false);
+INSERT INTO planets (name, description,radius, distance, gravity, image, type,is_delete) VALUES ('Венера', 'Вене́ра — вторая по удалённости от Солнца и шестая по размеру планета Солнечной системы, наряду с Меркурием, Землёй и Марсом принадлежащая к семейству планет земной группы.', 1737.1, 384400, 16.6, 'http://127.0.0.1:9000/amsflights/venus.jpg','Планета',false);
 
 
 -- INSERT INTO planets (name, description,radius, distance, gravity, image, type,is_delete) VALUES ('Тест', 'Тест - естественный спутник Земли, являющийся единственным небесным телом, на котором человек уже побывал. Она имеет покрытую кратерами поверхность и орбитирует вокруг Земли, повышая красоту ночного неба.', 1737.1, 384400, 16.6, 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Moon_nearside_LRO_color_mosaic.png/300px-Moon_nearside_LRO_color_mosaic.png','Спутник',false);
@@ -24,6 +24,8 @@ INSERT INTO planets (name, description,radius, distance, gravity, image, type,is
 -- INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 2, 3);
 -- INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES (3, 3, 2);
 
+
+--test
 
 
 
