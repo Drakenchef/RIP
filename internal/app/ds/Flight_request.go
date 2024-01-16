@@ -1,12 +1,8 @@
 package ds
 
-import (
-	"gorm.io/gorm"
-	"time"
-)
+import "time"
 
 type FlightRequest struct {
-	gorm.Model
 	DateCreate     time.Time `json:"date_create"`
 	DateFormation  time.Time `json:"date_formation"`
 	DateCompletion time.Time `json:"date_completion"`
