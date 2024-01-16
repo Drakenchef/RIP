@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	log.Println("Server started")
+	log.Println("Application start!")
 	api.StartServer()
-	log.Println("Server shutdown")
+	log.Println("Application terminated!")
 }
