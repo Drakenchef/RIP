@@ -162,7 +162,7 @@ func (r *Repository) UserUpdateFlightStatusById(id int) (*ds.FlightRequest, erro
 		Flight.Status = "в работе"
 		Flight.DateFormation = time.Now()
 	} else if Flight.Status == "в работе" {
-		Flight.Status = "отменен"
+		Flight.Status = "отменён"
 	}
 
 	// Сохраняем изменения в базе данных
