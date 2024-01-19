@@ -439,6 +439,8 @@ func (h *Handler) FlightById(ctx *gin.Context) {
 		h.errorHandler(ctx, http.StatusNoContent, err)
 		return
 	}
+
+	//flight.PlanetsRequest = sortByFlightNumber(flight.PlanetsRequest)
 	h.successHandler(ctx, "Flight", gin.H{
 		"id":              flight.ID,
 		"ams":             flight.AMS,

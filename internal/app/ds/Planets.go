@@ -1,7 +1,6 @@
 package ds
 
 type Planet struct {
-	//gorm.Model
 	ID          uint    `json:"id" gorm:"primary_key"`
 	Name        string  `gorm:"type:varchar(50)" json:"name"`
 	Description string  `gorm:"type:text" json:"description"`
