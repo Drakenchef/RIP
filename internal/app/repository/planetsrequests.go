@@ -58,7 +58,10 @@ func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *struct {
 			break
 		}
 	}
-
+	err = r.db.Save(&flightrequest).Error
+	if err != nil {
+		return err
+	}
 	return nil
 
 }
