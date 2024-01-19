@@ -440,7 +440,7 @@ func (h *Handler) FlightById(ctx *gin.Context) {
 		return
 	}
 
-	//flight.PlanetsRequest = sortByFlightNumber(flight.PlanetsRequest)
+	flight.PlanetsRequest = sortByFlightNumber(flight.PlanetsRequest)
 	h.successHandler(ctx, "Flight", gin.H{
 		"id":              flight.ID,
 		"ams":             flight.AMS,
@@ -456,6 +456,19 @@ func (h *Handler) FlightById(ctx *gin.Context) {
 		"result":          flight.Result,
 	})
 
+}
+func sortByFlightNumber(pr []ds.PlanetsRequest) []ds.PlanetsRequest {
+	if len(pr) < 2 {
+		return pr
+	}
+	for i := 0; i < len(pr)-2; i++ {
+		for j := i + 1; j < len(pr)-1; j++ {
+			if pr[j].FlightNumber > pr[i].FlightNumber {
+				pr[j].FlightNumber, pr[i].FlightNumber = pr[i].FlightNumber, pr[j].FlightNumber
+			}
+		}
+	}
+	return pr
 }
 
 func (h *Handler) UpdateFlightAsyncResult(ctx *gin.Context) {

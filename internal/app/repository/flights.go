@@ -195,10 +195,6 @@ func (r *Repository) ModerUpdateFlightStatusById(id int, modername string, statu
 	return &Flight, nil
 }
 func (r *Repository) FlightById(id string) (*ds.FlightRequest, error) {
-	//var flight ds.FlightRequest
-	//intId, _ := strconv.Atoi(id)
-	//r.db.Find(&flight, intId)
-	//return &flight, nil
 	flight := ds.FlightRequest{}
 	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").First(&flight, id)
 	return &flight, result.Error
