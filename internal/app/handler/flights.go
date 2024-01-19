@@ -478,8 +478,8 @@ func (h *Handler) UpdateFlightAsyncResult(ctx *gin.Context) {
 			return
 		}
 		h.successHandler(ctx, "result_updated", gin.H{
-			"satellite_id": idint,
-			"Result":       req.Result,
+			"Flight_id": idint,
+			"Result":    req.Result,
 		})
 	} else {
 		h.errorHandler(ctx, http.StatusForbidden, errors.New(req.AccessHash))

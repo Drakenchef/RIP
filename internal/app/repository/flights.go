@@ -15,7 +15,7 @@ func (r *Repository) FlightsList(userlogin, datestart, dateend, status string) (
 	}
 
 	if datestart != "" && dateend != "" {
-		db = db.Where("date_formation > ? AND date_formation < ?", datestart, dateend)
+		db = db.Where("date_formation >= ? AND date_formation <= ?", datestart, dateend)
 	}
 
 	if status != "" {
