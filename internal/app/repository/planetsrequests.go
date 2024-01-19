@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"github.com/drakenchef/RIP/internal/app/ds"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -75,11 +76,36 @@ func (r *Repository) AddPlanetToRequest(pr *struct {
 	return nil
 }
 
+//func (r *Repository) DeletePlanetRequest(frid, planetid uint) error {
+//	var planetsrequest ds.PlanetsRequest
+//	err := r.db.Where("fr_id = ? AND planet_id = ?", frid, planetid).Delete(&planetsrequest).Error
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
+
 func (r *Repository) DeletePlanetRequest(frid, planetid uint) error {
 	var planetsrequest ds.PlanetsRequest
-	err := r.db.Where("fr_id = ? AND planet_id = ?", frid, planetid).Delete(&planetsrequest).Error
+	err := r.db.Where("fr_id = ? AND planet_id = ?", frid, planetid).First(&planetsrequest).Error
 	if err != nil {
 		return err
 	}
+	var flightrequest ds.FlightRequest
+	err = r.db.Where("id = ?", planetsrequest.FRID).First(&flightrequest).Error
+	if err != nil {
+		return err
+	}
+	// Уменьшаем flight_number у всех planets_request, у которых он больше удаленной записи
+	err = r.db.Model(&ds.PlanetsRequest{}).Where("fr_id = ? AND flight_number > ?", frid, planetsrequest.FlightNumber).Update("flight_number", gorm.Expr("flight_number - ?", 1)).Error
+	if err != nil {
+		return err
+	}
+	var planetsrequest2 ds.PlanetsRequest
+	err2 := r.db.Where("fr_id = ? AND planet_id = ?", frid, planetid).Delete(&planetsrequest2).Error
+	if err2 != nil {
+		return err2
+	}
+
 	return nil
 }
