@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"time"
 )
@@ -11,23 +12,43 @@ func (r *Repository) PlanetsRequestsList() (*[]ds.PlanetsRequest, error) {
 	return &planetsRequest, result.Error
 }
 
-func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *ds.PlanetsRequest) error {
-	var oldPlanetRequest ds.PlanetsRequest
-	if result := r.db.First(&oldPlanetRequest, updatedPlanetRequest.FRID, updatedPlanetRequest.PlanetID); result.Error != nil {
-		return result.Error
-	}
-	if updatedPlanetRequest.FlightNumber != 0 {
-		oldPlanetRequest.FlightNumber = updatedPlanetRequest.FlightNumber
-	}
+//var oldPlanetRequest ds.PlanetsRequest
+//if result := r.db.First(&oldPlanetRequest, updatedPlanetRequest.FRID, updatedPlanetRequest.PlanetID); result.Error != nil {
+//	return result.Error
+//}
+//if updatedPlanetRequest.FlightNumber != 0 {
+//	oldPlanetRequest.FlightNumber = updatedPlanetRequest.FlightNumber
+//}
+//
+//*updatedPlanetRequest = oldPlanetRequest
+//result := r.db.Save(updatedPlanetRequest)
+//return result.Error
 
-	*updatedPlanetRequest = oldPlanetRequest
-	result := r.db.Save(updatedPlanetRequest)
-	return result.Error
+func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *struct {
+	PlanetID     uint   `json:"Planet_id"`
+	FRID         uint   `json:"fr_id"`
+	FlightNumber uint   `json:"flight_number"`
+	Command      string `json:"command"`
+}) error {
+	if updatedPlanetRequest.Command == "" {
+		return errors.New("error with updating planet number in request: Command empty")
+	}
+	//var flight ds.FlightRequest
+	//flight = r.db.Preload("PlanetsRequest.Planet").First(&flight, updatedPlanetRequest.FRID)
+	//if len(flight.PlanetsRequest) < 0 {
+	//	return errors.New("error with updating planet number in request: No Planets in request")
+	//}
+	//
+	//if updatedPlanetRequest.Command == "up"{
+	//	if flight.PlanetsRequest[updatedPlanetRequest.PlanetID]
+	//}
+	return errors.New("error with updating planet number in request: Command empty")
+
 }
 
 func (r *Repository) AddPlanetToRequest(pr *struct {
-	PlanetId     uint `json:"Planet_id"`
-	FlightNumber uint `json:"flight_number"`
+	PlanetId uint `json:"Planet_id"`
+	//FlightNumber uint `json:"flight_number"`
 }, userid uint) error {
 	var FlightRequest ds.FlightRequest
 	var user ds.Users
@@ -37,14 +58,17 @@ func (r *Repository) AddPlanetToRequest(pr *struct {
 		newRequest := ds.FlightRequest{UserID: user.ID, UserLogin: user.Login, Status: "создан", DateCreate: time.Now(), Result: "Отсутствует"}
 		r.db.Create(&newRequest)
 		query := "INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES ($1,$2, $3) ON CONFLICT DO NOTHING;"
-		err := r.db.Exec(query, newRequest.ID, pr.PlanetId, pr.FlightNumber)
+		err := r.db.Exec(query, newRequest.ID, pr.PlanetId, 1)
 		if err != nil {
 			return err.Error
 		}
 		return nil
 	}
+
+	flightNumber := 0
+	r.db.Model(&ds.PlanetsRequest{}).Where("fr_id = ?", FlightRequest.ID).Select("MAX(flight_number)").Scan(&flightNumber)
 	query := "INSERT INTO planets_requests (fr_id, planet_id, flight_number) VALUES ($1,$2, $3) ON CONFLICT DO NOTHING;"
-	err := r.db.Exec(query, FlightRequest.ID, pr.PlanetId, pr.FlightNumber)
+	err := r.db.Exec(query, FlightRequest.ID, pr.PlanetId, flightNumber+1)
 	if err != nil {
 		return err.Error
 	}

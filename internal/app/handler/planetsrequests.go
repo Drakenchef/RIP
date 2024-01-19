@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"github.com/drakenchef/RIP/internal/app/ds"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -31,7 +30,12 @@ func (h *Handler) PlanetsRequestsList(ctx *gin.Context) {
 // @Failure 500 {object} errorResp "Внутренняя ошибку"
 // @Router /PlanetsRequests [put]
 func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
-	var updatedPlanetRequest ds.PlanetsRequest
+	var updatedPlanetRequest struct {
+		PlanetID     uint   `json:"Planet_id"`
+		FRID         uint   `json:"fr_id"`
+		FlightNumber uint   `json:"flight_number"`
+		Command      string `json:"command"`
+	}
 	if err := ctx.BindJSON(&updatedPlanetRequest); err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
@@ -92,8 +96,8 @@ func (h *Handler) AddPlanetToRequest(ctx *gin.Context) {
 	}
 	//var planetRequest ds.PlanetsRequest
 	var request struct {
-		PlanetId     uint `json:"Planet_id"`
-		FlightNumber uint `json:"flight_number"`
+		PlanetId uint `json:"Planet_id"`
+		//FlightNumber uint `json:"flight_number"`
 	}
 	if err := ctx.BindJSON(&request); err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
