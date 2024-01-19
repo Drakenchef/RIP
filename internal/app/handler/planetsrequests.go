@@ -31,10 +31,9 @@ func (h *Handler) PlanetsRequestsList(ctx *gin.Context) {
 // @Router /PlanetsRequests [put]
 func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
 	var updatedPlanetRequest struct {
-		PlanetID     uint   `json:"Planet_id"`
-		FRID         uint   `json:"fr_id"`
-		FlightNumber uint   `json:"flight_number"`
-		Command      string `json:"command"`
+		PlanetID uint   `json:"Planet_id"`
+		FRID     uint   `json:"fr_id"`
+		Command  string `json:"command"`
 	}
 	if err := ctx.BindJSON(&updatedPlanetRequest); err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
@@ -50,9 +49,8 @@ func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
 	}
 
 	h.successHandler(ctx, "updated_planet", gin.H{
-		"fr_id":         updatedPlanetRequest.FRID,
-		"planet_id":     updatedPlanetRequest.PlanetID,
-		"flight_number": updatedPlanetRequest.FlightNumber,
+		"fr_id":     updatedPlanetRequest.FRID,
+		"planet_id": updatedPlanetRequest.PlanetID,
 	})
 }
 

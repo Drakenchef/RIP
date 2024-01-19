@@ -26,24 +26,40 @@ func (r *Repository) PlanetsRequestsList() (*[]ds.PlanetsRequest, error) {
 //return result.Error
 
 func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *struct {
-	PlanetID     uint   `json:"Planet_id"`
-	FRID         uint   `json:"fr_id"`
-	FlightNumber uint   `json:"flight_number"`
-	Command      string `json:"command"`
+	PlanetID uint   `json:"Planet_id"`
+	FRID     uint   `json:"fr_id"`
+	Command  string `json:"command"`
 }) error {
 	if updatedPlanetRequest.Command == "" {
-		return errors.New("error with updating planet number in request: Command empty")
+		return errors.New("error with updating planet number in request: Command is empty")
 	}
-	//var flight ds.FlightRequest
-	//flight = r.db.Preload("PlanetsRequest.Planet").First(&flight, updatedPlanetRequest.FRID)
-	//if len(flight.PlanetsRequest) < 0 {
-	//	return errors.New("error with updating planet number in request: No Planets in request")
-	//}
-	//
-	//if updatedPlanetRequest.Command == "up"{
-	//	if flight.PlanetsRequest[updatedPlanetRequest.PlanetID]
-	//}
-	return errors.New("error with updating planet number in request: Command empty")
+	var flightrequest ds.FlightRequest
+	err := r.db.Where("id = ?", updatedPlanetRequest.FRID).First(&flightrequest).Error
+	if err != nil {
+		return err
+	}
+	for i, planetrequest := range flightrequest.PlanetsRequest {
+		if planetrequest.PlanetID == updatedPlanetRequest.PlanetID &&
+			planetrequest.FRID == updatedPlanetRequest.FRID {
+			if updatedPlanetRequest.Command == "down" {
+				if i != len(flightrequest.PlanetsRequest)-1 {
+					flightrequest.PlanetsRequest[i].FRID++
+					flightrequest.PlanetsRequest[i-1].FRID--
+					break
+				}
+			}
+			if updatedPlanetRequest.Command == "up" {
+				if i != 0 {
+					flightrequest.PlanetsRequest[i].FRID--
+					flightrequest.PlanetsRequest[i-1].FRID++
+					break
+				}
+			}
+			break
+		}
+	}
+
+	return nil
 
 }
 
