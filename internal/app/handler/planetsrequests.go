@@ -30,27 +30,27 @@ func (h *Handler) PlanetsRequestsList(ctx *gin.Context) {
 // @Failure 500 {object} errorResp "Внутренняя ошибку"
 // @Router /PlanetsRequests [put]
 func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
-	var updatedPlanetRequest struct {
-		PlanetID uint   `json:"Planet_id"`
-		FRID     uint   `json:"fr_id"`
-		Command  string `json:"command"`
+	var request struct {
+		PlanetID uint `json:"Planet_id"`
+		Command  uint `json:"command"`
+		FRID     uint `json:"fr_id"`
 	}
-	if err := ctx.BindJSON(&updatedPlanetRequest); err != nil {
+	if err := ctx.BindJSON(&request); err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
 	}
-	if updatedPlanetRequest.FRID == 0 || updatedPlanetRequest.PlanetID == 0 {
+	if request.FRID == 0 || request.PlanetID == 0 {
 		h.errorHandler(ctx, http.StatusBadRequest, idNotFound)
 		return
 	}
-	if err := h.Repository.UpdatePlanetNumberInRequest(&updatedPlanetRequest); err != nil {
+	if err := h.Repository.UpdatePlanetNumberInRequest(&request); err != nil {
 		h.errorHandler(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	h.successHandler(ctx, "updated_planet", gin.H{
-		"fr_id":     updatedPlanetRequest.FRID,
-		"planet_id": updatedPlanetRequest.PlanetID,
+		"fr_id":     request.FRID,
+		"planet_id": request.PlanetID,
 	})
 }
 

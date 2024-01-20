@@ -26,45 +26,43 @@ func (r *Repository) PlanetsRequestsList() (*[]ds.PlanetsRequest, error) {
 //return result.Error
 
 func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *struct {
-	PlanetID uint   `json:"Planet_id"`
-	FRID     uint   `json:"fr_id"`
-	Command  string `json:"command"`
+	PlanetID uint `json:"Planet_id"`
+	Command  uint `json:"command"`
+	FRID     uint `json:"fr_id"`
 }) error {
-	if updatedPlanetRequest.Command == "" {
+	if updatedPlanetRequest.Command == 0 {
 		return errors.New("error with updating planet number in request: Command is empty")
 	}
-	var flightrequest ds.FlightRequest
-	err := r.db.Where("id = ?", updatedPlanetRequest.FRID).First(&flightrequest).Error
-	if err != nil {
-		return err
-	}
-	for i, planetrequest := range flightrequest.PlanetsRequest {
-		if planetrequest.PlanetID == updatedPlanetRequest.PlanetID &&
-			planetrequest.FRID == updatedPlanetRequest.FRID {
-			if updatedPlanetRequest.Command == "down" {
-				if i != len(flightrequest.PlanetsRequest)-1 {
-					flightrequest.PlanetsRequest[i].FRID++
-					flightrequest.PlanetsRequest[i-1].FRID--
-					break
-				}
-			}
-			if updatedPlanetRequest.Command == "up" {
-				if i != 0 {
-					flightrequest.PlanetsRequest[i].FRID--
-					flightrequest.PlanetsRequest[i-1].FRID++
-					break
-				}
-			}
-			break
+
+	var PlanetsRequest1 ds.PlanetsRequest
+	r.db.Where("fr_id = ? AND planet_id = ?", updatedPlanetRequest.FRID, updatedPlanetRequest.PlanetID).Find(&PlanetsRequest1)
+
+	var PlanetsRequest2 ds.PlanetsRequest
+	if updatedPlanetRequest.Command == 1 {
+		err := r.db.Where("fr_id = ? AND flight_number = ?", updatedPlanetRequest.FRID, PlanetsRequest1.FlightNumber+1).First(&PlanetsRequest2).Error
+		if err == nil {
+			r.db.Model(&PlanetsRequest2).Update("flight_number", PlanetsRequest2.FlightNumber-1)
+			r.db.Model(&PlanetsRequest1).Update("flight_number", PlanetsRequest1.FlightNumber+1)
 		}
 	}
-	err = r.db.Save(&flightrequest).Error
-	if err != nil {
-		return err
+	if updatedPlanetRequest.Command == 2 {
+		err := r.db.Where("fr_id = ? AND flight_number = ?", updatedPlanetRequest.FRID, PlanetsRequest1.FlightNumber-1).First(&PlanetsRequest2).Error
+		if err == nil {
+			r.db.Model(&PlanetsRequest2).Update("flight_number", PlanetsRequest2.FlightNumber+1)
+			r.db.Model(&PlanetsRequest1).Update("flight_number", PlanetsRequest1.FlightNumber-1)
+		}
 	}
+
 	return nil
 
 }
+
+//	err := r.db.Model(&ds.PlanetsRequest{}).Where("fr_id = ? AND flight_number = ?", updatedPlanetRequest.FRID, PlanetsRequest1.FlightNumber+1).Error
+//	if err == nil {
+//		r.db.Model(&ds.PlanetsRequest{}).Where("fr_id = ? AND flight_number = ?", updatedPlanetRequest.FRID, PlanetsRequest1.FlightNumber+1).Update("flight_number", PlanetsRequest1.FlightNumber-1)
+//	}
+//	r.db.Model(&ds.PlanetsRequest{}).Where("fr_id = ? AND planet_id = ?", updatedPlanetRequest.FRID, updatedPlanetRequest.PlanetID).Update("flight_number", PlanetsRequest1.FlightNumber+1)
+//}
 
 func (r *Repository) AddPlanetToRequest(pr *struct {
 	PlanetId uint `json:"Planet_id"`
