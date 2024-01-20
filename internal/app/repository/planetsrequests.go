@@ -26,7 +26,7 @@ func (r *Repository) PlanetsRequestsList() (*[]ds.PlanetsRequest, error) {
 //return result.Error
 
 func (r *Repository) UpdatePlanetNumberInRequest(updatedPlanetRequest *struct {
-	PlanetID uint `json:"Planet_id"`
+	PlanetID uint `json:"planet_id"`
 	Command  uint `json:"command"`
 	FRID     uint `json:"fr_id"`
 }) error {

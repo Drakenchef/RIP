@@ -31,7 +31,7 @@ func (h *Handler) PlanetsRequestsList(ctx *gin.Context) {
 // @Router /PlanetsRequests [put]
 func (h *Handler) UpdatePlanetNumberInRequest(ctx *gin.Context) {
 	var request struct {
-		PlanetID uint `json:"Planet_id"`
+		PlanetID uint `json:"planet_id"`
 		Command  uint `json:"command"`
 		FRID     uint `json:"fr_id"`
 	}

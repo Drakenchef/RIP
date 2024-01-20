@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/drakenchef/RIP/internal/app/ds"
 	"github.com/drakenchef/RIP/internal/app/utils"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -196,7 +197,9 @@ func (r *Repository) ModerUpdateFlightStatusById(id int, modername string, statu
 }
 func (r *Repository) FlightById(id string) (*ds.FlightRequest, error) {
 	flight := ds.FlightRequest{}
-	result := r.db.Preload("User").Preload("PlanetsRequest.Planet").First(&flight, id)
+	result := r.db.Preload("User").Preload("PlanetsRequest", func(db *gorm.DB) *gorm.DB {
+		return r.db.Order("flight_number ASC").Preload("Planet")
+	}).First(&flight, id)
 	return &flight, result.Error
 }
 
