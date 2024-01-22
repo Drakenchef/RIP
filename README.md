@@ -2,4 +2,4 @@
 
 Репозиторий нативного приложения https://github.com/Drakenchef/NativeAndroid
 
-Репозиторий асинхронного сервиса https://github.com/Drakenchef/Async_server
+ Github pages drakenchef.github.io/frontendrip/
