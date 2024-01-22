@@ -1,5 +1,10 @@
-Репозиторий фронтенда            https://github.com/Drakenchef/frontendrip
+<h1>Полёты на космические тела</h1>
+Cистема для выбора учёными доступных космических тел, формирования заявок на полёт автоматических межпланетных станций, включающую в себя веб-сервис, веб-приложение, мобильное приложение и выделенный сервис отслеживания результата полёта.
 
-Репозиторий нативного приложения https://github.com/Drakenchef/NativeAndroid
+Демо-версия проекта: https://drakenchef.github.io/frontendrip/
 
- Github pages https://drakenchef.github.io/frontendrip/
+Смежные репозитории:
+<ul>
+<li>Фронтенд: https://github.com/Drakenchef/frontendrip</li>
+<li>Нативное приложение: https://github.com/Drakenchef/NativeAndroid</li>
+</ul>
