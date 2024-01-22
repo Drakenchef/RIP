@@ -12,7 +12,7 @@ from concurrent import futures
 
 # Здесь укажите URL основного сервиса, где находится ваш эндпойнт
 CALLBACK_URL = "http://127.0.0.1:8888/UpdateFlightAsyncResult/"
-
+access_hash = "ASLDKjalksdjalskjdlk12lk3jfjkfdsfdasdASIODU*As"
 executor = futures.ThreadPoolExecutor(max_workers=1)
 
 
@@ -22,12 +22,12 @@ def get_random_async_status(flight_id):
     if tmp <= 8:
         return {
             "flight_id": flight_id,
-            "result": "успех",
+            "result": "успешный полёт"
         }
     elif tmp >8:
         return {
             "flight_id": flight_id,
-            "result": "провал"
+            "result": "АМС разбилась"
         }
 
 def async_status_callback(task):
@@ -42,7 +42,7 @@ def async_status_callback(task):
 
     nurl = CALLBACK_URL + str(result["flight_id"])
     headers = {'Content-Type': 'application/json'}
-    answer = {"result": result["result"]}
+    answer = {"result": result["result"],"access_hash":access_hash}
 
 
 
@@ -57,7 +57,6 @@ def async_status_callback(task):
 @api_view(['POST'])
 def start_async_update(request):
     flight_id = request.data.get("flight_id")
-    print(flight_id)
 
     if flight_id:
         task = executor.submit(get_random_async_status, flight_id)
