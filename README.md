@@ -7,4 +7,5 @@ Cистема для выбора учёными доступных космич
 <ul>
 <li>Фронтенд: https://github.com/Drakenchef/frontendrip</li>
 <li>Нативное приложение: https://github.com/Drakenchef/NativeAndroid</li>
+<li>Асинхронный сервис: https://github.com/Drakenchef/Async_server</li>
 </ul>
