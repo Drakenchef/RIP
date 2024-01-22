@@ -2,4 +2,4 @@
 
 Репозиторий нативного приложения https://github.com/Drakenchef/NativeAndroid
 
- Github pages drakenchef.github.io/frontendrip/
+ Github pages https://drakenchef.github.io/frontendrip/
